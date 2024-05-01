@@ -15,3 +15,11 @@
   position: relative;
   margin: 0 auto;
 }
+
+@media screen and (min-width: 480px) and (max-width: 930px) {
+  .page {
+    color: white;
+    margin: 0 20px;
+    max-width: calc(100% - 40px);
+  }
+}
