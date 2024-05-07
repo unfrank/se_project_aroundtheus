@@ -1,7 +1,7 @@
 .footer {
   color: #545454;
-  margin-top: 67px;
-  font-family: Inter;
+  margin: 67px 0 60px;
+  font-family: "Inter", Arial, sans-serif;
   font-size: 18px;
   font-weight: 400;
   line-height: 22px;
@@ -11,14 +11,7 @@
   .footer {
     display: grid;
     flex-direction: column;
-    justify-content: center;
     margin-top: 48px;
     margin-bottom: 36px;
-  }
-}
-
-@media screen and (min-width: 480px) and (max-width: 930px) {
-  .footer {
-    max-width: calc(880px - 300px);
   }
 }
