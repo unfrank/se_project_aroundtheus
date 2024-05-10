@@ -7,20 +7,27 @@
 .header__logo {
   width: 173px;
   height: 33px;
+  padding-bottom: 41px;
 }
 
 @media screen and (max-width: 480px) {
   .header {
     margin-top: 28px;
     margin-bottom: 42px;
-    margin-left: -20px;
-    margin-right: -20px;
-    width: calc(100% + 40px);
   }
 
   .header__logo {
     width: 126px;
     height: 24px;
     padding-left: 27px;
+    padding-bottom: 32px;
+  }
+}
+
+@media screen and (min-width: 480px) and (max-width: 930px) {
+  .header {
+    margin-left: 20px;
+    margin-right: 20px;
+    max-width: calc(100% - 40px);
   }
 }
