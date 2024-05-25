@@ -7,7 +7,7 @@
   right: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
-  /*  */
+
   display: none;
   padding: 0 19px;
 }
@@ -23,7 +23,6 @@
   border-radius: 10px;
   width: 430px;
   height: 330px;
-  /*  */
 }
 
 .modal__close {
@@ -43,7 +42,6 @@
 
 .modal__heading {
   color: black;
-  /*  */
   font-size: 24px;
   font-weight: 900;
   line-height: 29.05px;
@@ -55,7 +53,6 @@
 }
 
 .modal__form {
-  /*  */
   font-size: 14px;
   font-weight: 400;
   line-height: 16.94px;
@@ -97,5 +94,3 @@
     padding: 0;
   }
 }
-
-/* remake under here */
