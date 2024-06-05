@@ -11,7 +11,7 @@
   padding: 0 19px;
 }
 
-.modal__opened {
+.modal_opened {
   display: flex;
 }
 
@@ -20,8 +20,8 @@
   background-color: white;
   margin: auto;
   border-radius: 10px;
-  width: 430px;
-  height: 330px;
+  max-width: 430px;
+  max-height: 330px;
 }
 
 .modal__close {
@@ -47,7 +47,6 @@
   padding: 0;
   margin: 0;
   max-width: 330px;
-  max-height: 23px;
   padding: 34px 64px 54px 36px;
 }
 
