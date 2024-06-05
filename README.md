@@ -4,17 +4,19 @@
 
 This project is a web page titled "Around the U.S."
 Eventually, it will allow users to view profiles, add new content, and interact with cards featuring various destinations around the United States.
-(Lake Louise is in Banff, but close enough)
+(Lake Louise is in Alberta, but close enough)
 
 ## Demonstration of capabilities
 
 The objective of this project is to showcase the responsiveness of block elements and their components when the screen size changes, specifically focusing on layouts at 1280px and 320px. Moreover, the project highlights a seamless transition between these two screen sizes.
+With the final stage project of Sprint 4, now a modal box pops up on command and allows for editing by the user.
+Additionally, the author was able to remove the bulky "<li>" section from the HTML in favor of a series of elements and functions in JavaScript.
 
 ## Features, current and future:
 
 - **Header Section:** Contains logo, displays bottom border.
 - **Profile Section:** Displays a user's profile picture, name, and description.
-  Currently, it is set to 'Jacques Cousteau", the author expects this will change in future iterations.
+  The user's profle name and title are editable by the user.
 - **Add Button:** Will enable users to add new content.
 - **Card Section:** Displays cards featuring different destinations around the U.S.
 - **Like Button:** Will allow users to like or interact with the cards.
