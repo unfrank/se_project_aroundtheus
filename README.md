@@ -15,11 +15,20 @@ The objective of this project is to showcase the responsiveness of block element
 - **Header Section:** Contains logo, displays bottom border.
 - **Profile Section:** Displays a user's profile picture, name, and description.
   Currently, it is set to 'Jacques Cousteau", the author expects this will change in future iterations.
-- **Edit Profile Button:** Will allow users to edit their profile information.
 - **Add Button:** Will enable users to add new content.
 - **Card Section:** Displays cards featuring different destinations around the U.S.
 - **Like Button:** Will allow users to like or interact with the cards.
 - **Footer:** Standard footer, with year of production (2024)
+
+## Edit Profile Feature
+
+The "Edit Profile" feature allows users to open and close a modal where they can edit their profile information.
+
+- The modal is triggered by clicking the "Edit Profile" button located in the profile section.
+- This button adds the `modal__opened` class to the modal element, making it visible.
+- The modal can be closed by clicking the close button (styled as an 'X') within the modal.
+- This action removes the `modal__opened` class from the modal element, hiding it from view.
+  This feature ensures a smooth and intuitive user experience for editing profile information.
 
 ## Fonts
 
@@ -39,6 +48,7 @@ Images exported from Figma (see above) then housed in project's image directory.
 
 - HTML
 - CSS
+- JS
 
 ## GitHub Pages
 

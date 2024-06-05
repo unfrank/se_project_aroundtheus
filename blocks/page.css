@@ -16,9 +16,9 @@
   margin: 0 auto;
 }
 
-/* @media screen and (max-width: 930px) { */
-/* .page { */
-/* margin: 0 20px; */
-/* max-width: calc(100% - 40px); */
-/* } */
-/* } */
+@media screen and (max-width: 930px) {
+  .page {
+    margin: 0 20px;
+    max-width: calc(100% - 40px);
+  }
+}
