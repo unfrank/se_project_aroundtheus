@@ -95,6 +95,8 @@
   .modal__container {
     max-width: 282px;
     min-height: 322px;
+    padding-left: 19px;
+    padding-right: 19px;
   }
 
   .modal__heading {
