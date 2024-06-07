@@ -102,7 +102,7 @@
   .modal__heading {
     font-size: 18px;
     line-height: 21.78px;
-    padding: 25px 0 41px;
+    padding: 25px 0 0;
   }
 
   .modal__form {
