@@ -10,7 +10,7 @@ Eventually, it will allow users to view profiles, add new content, and interact 
 
 The objective of this project is to showcase the responsiveness of block elements and their components when the screen size changes, specifically focusing on layouts at 1280px and 320px. Moreover, the project highlights a seamless transition between these two screen sizes.
 With the final stage project of Sprint 4, now a modal box pops up on command and allows for editing by the user.
-Additionally, the author was able to remove the bulky "<li>" section from the HTML in favor of a series of elements and functions in JavaScript.
+Additionally, the author was able to remove the bulky list section from the HTML in favor of a series of elements and functions in JavaScript.
 
 ## Features, current and future:
 
@@ -59,4 +59,3 @@ https://unfrank.github.io/se_project_aroundtheus/
 ## Explanatory Video
 
 https://1drv.ms/v/s!AtgB2CGDAMapgq9X2pg4-X6mLSPwiA?e=yGSKzO
-
