@@ -2,27 +2,49 @@
 
 ## Overview
 
-This project is a web page titled "Around the U.S."
-Eventually, it will allow users to view profiles, add new content, and interact with cards featuring various destinations around the United States.
-(Lake Louise is in Alberta, but close enough)
+"Around the U.S." is a responsive web page that allows users to view profiles, add new content, and interact with cards featuring various destinations around the United States (and nearby areas). The project demonstrates responsiveness and smooth transitions between different screen sizes.
 
-## Demonstration of capabilities
+## Layout
 
-The objective of this project is to showcase the responsiveness of block elements and their components when the screen size changes, specifically focusing on layouts at 1280px and 320px. Moreover, the project highlights a seamless transition between these two screen sizes.
-With the final stage project of Sprint 4, now a modal box pops up on command and allows for editing by the user.
-Additionally, the author was able to remove the bulky list section from the HTML in favor of a series of elements and functions in JavaScript.
+Header Section:
+Displays the site logo with a bottom border.
+Profile Section:
+Shows a user's profile picture, name, and description. Users can edit their profile name and title via a modal.
+Add Button:
+Allows users to add new content (cards).
+Card Section:
+Displays cards featuring different destinations. Each card includes an image, title, like button, and delete button.
+Footer:
+Standard footer displaying the year of production (2024).
+Edit Profile Feature:
+:Users can edit their profile information through a modal that opens on clicking the "Edit Profile" button.
 
-## Features, current and future:
+## Rendering Cards
 
-- **Header Section:** Contains logo, displays bottom border.
-- **Profile Section:** Displays a user's profile picture, name, and description.
-  The user's profle name and title are editable by the user.
-- **Add Button:** Will enable users to add new content.
-- **Card Section:** Displays cards featuring different destinations around the U.S.
-- **Like Button:** Will allow users to like or interact with the cards.
-- **Footer:** Standard footer, with year of production (2024)
+The logic to iterate through the array of cards was initially written using a for loop. This was refactored to use the forEach array method, which is more concise and common in practice for iterating over arrays.
 
-## Edit Profile Feature
+## New Features
+
+Form for Adding a Card:
+A form for adding new cards was added. This form is displayed when the user clicks the "+" button and can be closed by clicking the "Close" button.
+
+Adding a Card:
+A feature was developed to allow users to add custom cards. Users can enter a name and a link to an image. Upon clicking the "Save" button, the new card appears at the beginning of the card container, and the form modal closes simultaneously.
+
+The "Like" Button:
+The "Like" button was implemented. When a user clicks on the "Like" button, the heart icon changes its color to indicate the like.
+
+Deleting a Card:
+A delete icon was added to the cards. The delete button is functional, allowing users to remove cards from the list.
+
+Opening the Picture Modal:
+When a user clicks on a picture, a modal box with the picture opens. The modal can be closed by clicking the "Close" button.
+
+## Aesthetics
+
+The modal boxes were enhanced to open and close smoothly. The modals transition from transparent to visible when opened and vice versa when closed, ensuring a smooth user experience.
+
+## Existing Features
 
 The "Edit Profile" feature allows users to open and close a modal where they can edit their profile information.
 
