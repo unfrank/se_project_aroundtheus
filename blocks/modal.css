@@ -15,10 +15,10 @@
   opacity: 0;
   pointer-events: none;
   transition: visibility 0s, opacity 0.5s linear;
+  display: flex;
 }
 
 .modal_opened {
-  display: flex;
   visibility: visible;
   opacity: 1;
   pointer-events: all;
@@ -118,6 +118,11 @@
 .modal__input:hover,
 .modal__button:hover {
   cursor: pointer;
+}
+
+.modal__close:hover,
+.modal__button:hover {
+  opacity: 0.8;
 }
 
 @media screen and (max-width: 630px) {
