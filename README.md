@@ -50,17 +50,27 @@ The main structure of the webpage including profile section, cards section, and 
 
 #### normalize.css: Ensures consistent styling across different browsers.
 
-fonts.css: Defines custom fonts.
-page.css: General styles for the page.
-header.css: Styles for the header section.
-profile.css: Styles for the profile section.
-cards.css: Styles for the cards list.
-card.css: Styles for individual cards.
-footer.css: Styles for the footer section.
-popup.css: Styles for the popup windows.
-JavaScript
-index.js: Handles interactivity, including popup behavior and card interactions.
-validation.js: Handles form validation for the profile and add card popups.
+#### fonts.css: Defines custom fonts.
+
+#### page.css: General styles for the page.
+
+#### header.css: Styles for the header section.
+
+#### profile.css: Styles for the profile section.
+
+#### cards.css: Styles for the cards list.
+
+#### card.css: Styles for individual cards.
+
+#### footer.css: Styles for the footer section.
+
+#### popup.css: Styles for the popup windows.
+
+### JavaScript
+
+#### index.js: Handles interactivity, including popup behavior and card interactions.
+
+#### validation.js: Handles form validation for the profile and add card popups.
 
 ## GitHub Pages
 
