@@ -2,7 +2,6 @@
 function showInputError(formEl, inputEl, { inputErrorClass, errorClass }) {
   const errorMessageEl = formEl.querySelector(`#${inputEl.id}-error`);
   inputEl.classList.add(inputErrorClass);
-  inputEl.style.borderBottom = "2px solid red";
   errorMessageEl.textContent = inputEl.validationMessage;
   errorMessageEl.classList.add(errorClass);
 }
@@ -11,7 +10,6 @@ function showInputError(formEl, inputEl, { inputErrorClass, errorClass }) {
 function hideInputError(formEl, inputEl, { inputErrorClass, errorClass }) {
   const errorMessageEl = formEl.querySelector(`#${inputEl.id}-error`);
   inputEl.classList.remove(inputErrorClass);
-  inputEl.style.borderBottom = "";
   errorMessageEl.textContent = "";
   errorMessageEl.classList.remove(errorClass);
 }
