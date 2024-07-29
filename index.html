@@ -46,65 +46,88 @@
       </footer>
     </div>
 
-    <!-- Edit Modal -->
-    <div class="modal" id="profile-edit-modal">
-      <div class="modal__container">
-        <button class="modal__close" type="button"></button>
-        <h2 class="modal__heading">Edit Profile</h2>
-        <form class="modal__form">
+    <!-- Edit popup -->
+    <div class="popup" id="profile-edit-popup">
+      <div class="popup__container">
+        <button class="popup__close" type="button"></button>
+        <h2 class="popup__heading">Edit Profile</h2>
+        <form class="popup__form" id="edit-profile-form">
           <input
-            class="modal__input modal__input_type_name"
-            type="text"
-            name="name"
+            class="popup__input popup__input_type_name"
             id="profile-title-input"
+            type="text"
+            minlength="2"
+            maxlength="40"
+            required
+            name="name"
             placeholder="Name"
             autocomplete="off"
           />
+          <span class="popup__error" id="profile-title-input-error"></span>
+
           <input
-            class="modal__input modal__input_type_description"
-            type="text"
-            name="description"
+            class="popup__input popup__input_type_description"
             id="profile-description-input"
+            type="text"
+            minlength="2"
+            maxlength="200"
+            required
+            name="description"
             placeholder="Description"
             autocomplete="off"
           />
-          <button class="modal__button" type="submit">Save</button>
+          <span
+            class="popup__error"
+            id="profile-description-input-error"
+          ></span>
+          <button class="popup__button popup__button_disabled" type="submit">
+            Save
+          </button>
         </form>
       </div>
     </div>
 
-    <!-- Add Card Modal -->
-    <div class="modal" id="add-card-modal">
-      <div class="modal__container">
-        <button class="modal__close" type="button"></button>
-        <h2 class="modal__heading">New Place</h2>
-        <form class="modal__form" id="add-card-form">
+    <!-- Add Card popup -->
+    <div class="popup" id="add-card-popup">
+      <div class="popup__container">
+        <button class="popup__close" type="button"></button>
+        <h2 class="popup__heading">New Place</h2>
+        <form class="popup__form" id="add-card-form">
           <input
-            class="modal__input modal__input_type_title"
-            type="text"
-            name="title"
+            class="popup__input popup__input_type_title"
             id="add-card-title"
-            placeholder="Title"
-          />
-          <input
-            class="modal__input modal__input_type_url"
-            type="url"
-            name="url"
+            type="text"
+            minlength="1"
+            maxlength="30"
             required
-            id="add-card-url"
-            placeholder="Image URL"
+            name="title"
+            placeholder="Title"
+            autocomplete="off"
           />
-          <button class="modal__button" type="submit">Save</button>
+          <span class="popup__error" id="add-card-title-error"></span>
+          <input
+            class="popup__input popup__input_type_url"
+            id="add-card-url"
+            type="url"
+            required
+            name="url"
+            placeholder="Image URL"
+            autocomplete="off"
+          />
+          <span class="popup__error" id="add-card-url-error"></span>
+          <button class="popup__button popup__button_disabled" type="submit">
+            Save
+          </button>
         </form>
       </div>
     </div>
 
-    <!-- Picture Modal -->
-    <div class="modal" id="picture-modal">
-      <div class="modal__container_large">
-        <button class="modal__close" type="button"></button>
-        <img class="modal__image" />
-        <div class="modal__caption"></div>
+    <!-- Picture popup -->
+    <div class="popup" id="picture-popup">
+      <div class="popup__container_large">
+        <button class="popup__close" type="button"></button>
+        <img class="popup__image" />
+        <div class="popup__caption"></div>
       </div>
     </div>
 
@@ -121,6 +144,8 @@
       </li>
     </template>
 
+    <!-- JavaScript-->
     <script src="./scripts/index.js" defer></script>
+    <script src="./scripts/validation.js" defer></script>
   </body>
 </html>

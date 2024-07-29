@@ -1,78 +1,65 @@
-# Project 3: Around the U.S
+# Around the U.S.
 
 ## Overview
 
-"Around the U.S." is a responsive web page that allows users to view profiles, add new content, and interact with cards featuring various destinations around the United States (and nearby areas). The project demonstrates responsiveness and smooth transitions between different screen sizes.
+"Around the U.S." is a web project that showcases various places around the United States through a dynamic and interactive interface. The project features a profile section, an editable profile popup, an add card popup, and a gallery of cards representing different places.
 
-## Layout
+## Features
 
-Header Section:
-Displays the site logo with a bottom border.
-Profile Section:
-Shows a user's profile picture, name, and description. Users can edit their profile name and title via a modal.
-Add Button:
-Allows users to add new content (cards).
-Card Section:
-Displays cards featuring different destinations. Each card includes an image, title, like button, and delete button.
-Footer:
-Standard footer displaying the year of production (2024).
-Edit Profile Feature:
-:Users can edit their profile information through a modal that opens on clicking the "Edit Profile" button.
+Profile Section: Displays a profile image, name, and description. Users can edit the profile information.
+Add Card Popup: Allows users to add new places with a title and an image URL.
+Dynamic Cards: A list of cards showcasing different places, with options to like or delete each card.
+Responsive Design: Ensures the application looks good on different screen sizes.
+Validation: Form inputs are validated to ensure correct data entry.
 
-## Rendering Cards
+## Technologies Used
 
-The logic to iterate through the array of cards was initially written using a for loop. This was refactored to use the forEach array method, which is more concise and common in practice for iterating over arrays.
+HTML5: Markup language used for structuring the content.
+CSS3: Stylesheets used for the visual presentation.
+JavaScript: Programming language used for adding interactivity.
+Normalize.css: A modern, HTML5-ready alternative to CSS resets.
 
-## New Features
+### Profile Section
 
-Form for Adding a Card:
-A form for adding new cards was added. This form is displayed when the user clicks the "+" button and can be closed by clicking the "Close" button.
+Edit profile by clicking the edit button next to the profile name. A popup will appear allowing you to change the name and description.
+Save the changes to update the profile information.
 
-Adding a Card:
-A feature was developed to allow users to add custom cards. Users can enter a name and a link to an image. Upon clicking the "Save" button, the new card appears at the beginning of the card container, and the form modal closes simultaneously.
+### Adding a New Card
 
-The "Like" Button:
-The "Like" button was implemented. When a user clicks on the "Like" button, the heart icon changes its color to indicate the like.
+Click the "Add" button to open the "New Place" popup.
+Enter the title and image URL of the new place.
+Click "Save" to add the new card to the gallery.
 
-Deleting a Card:
-A delete icon was added to the cards. The delete button is functional, allowing users to remove cards from the list.
+### Interacting with Cards
 
-Opening the Picture Modal:
-When a user clicks on a picture, a modal box with the picture opens. The modal can be closed by clicking the "Close" button.
+Click the like button to like a card.
+Click the trash button to delete a card.
+Click on a card image to view it in a larger popup.
 
-## Aesthetics
+### Customization
 
-The modal boxes were enhanced to open and close smoothly. The modals transition from transparent to visible when opened and vice versa when closed, ensuring a smooth user experience.
+You can customize the project by modifying the files under the /styles and /scripts directories to fit your needs.
 
-## Existing Features
+## Code Overview
 
-The "Edit Profile" feature allows users to open and close a modal where they can edit their profile information.
+### HTML (index.html)
 
-- The modal is triggered by clicking the "Edit Profile" button located in the profile section.
-- This button adds the `modal__opened` class to the modal element, making it visible.
-- The modal can be closed by clicking the close button (styled as an 'X') within the modal.
-- This action removes the `modal__opened` class from the modal element, hiding it from view.
-  This feature ensures a smooth and intuitive user experience for editing profile information.
+The main structure of the webpage including profile section, cards section, and popups.
 
-## Fonts
+### CSS
 
-Download: https://rsms.me/inter/
-Fonts @ _project_/vendor/fonts.
-Imported into index.css.
-
-## Figma
-
-https://www.figma.com/file/ii4xxsJ0ghevUOcssTlHZv/Sprint-3%3A-Around-the-US?node-id=0%3A1
-
-## Images
-
-Images exported from Figma (see above) then housed in project's image directory.
-
-## Languages Used
-
-- HTML
-- CSS
-- JS
+normalize.css: Ensures consistent styling across different browsers.
+fonts.css: Defines custom fonts.
+page.css: General styles for the page.
+header.css: Styles for the header section.
+profile.css: Styles for the profile section.
+cards.css: Styles for the cards list.
+card.css: Styles for individual cards.
+footer.css: Styles for the footer section.
+popup.css: Styles for the popup windows.
+JavaScript
+index.js: Handles interactivity, including popup behavior and card interactions.
+validation.js: Handles form validation for the profile and add card popups.
 
 ## GitHub Pages
 

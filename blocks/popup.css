@@ -1,4 +1,4 @@
-.modal {
+.popup {
   font-family: "Inter", Arial, sans-serif;
   position: fixed;
   top: 0;
@@ -7,7 +7,6 @@
   right: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
-  display: none;
   justify-content: center;
   align-items: center;
   padding: 0 19px;
@@ -18,14 +17,14 @@
   display: flex;
 }
 
-.modal_opened {
+.popup_opened {
   visibility: visible;
   opacity: 1;
   pointer-events: all;
   transition: visibility 0s, opacity 0.5s linear;
 }
 
-.modal__container {
+.popup__container {
   position: relative;
   background-color: white;
   margin: auto;
@@ -34,7 +33,7 @@
   min-height: 330px;
 }
 
-.modal__container_large {
+.popup__container_large {
   position: relative;
   display: flex;
   justify-content: center;
@@ -43,13 +42,13 @@
   max-height: 75vh;
 }
 
-.modal__image {
+.popup__image {
   max-width: 100%;
   max-height: 100%;
   object-fit: cover;
 }
 
-.modal__caption {
+.popup__caption {
   position: absolute;
   bottom: -26px;
   width: 100%;
@@ -59,7 +58,7 @@
   color: white;
 }
 
-.modal__close {
+.popup__close {
   border: none;
   background-color: transparent;
   position: absolute;
@@ -72,9 +71,10 @@
   background-repeat: no-repeat;
   background-size: contain;
   transition: all 0.3s ease;
+  opacity: 0;
 }
 
-.modal__heading {
+.popup__heading {
   color: black;
   font-size: 24px;
   font-weight: 900;
@@ -83,27 +83,30 @@
   padding: 34px 64px 54px 36px;
 }
 
-.modal__form {
+.popup__form {
   font-size: 14px;
   font-weight: 400;
   line-height: 16.94px;
   padding: 0 36px 36.51px;
 }
 
-.modal__input {
+.popup__input {
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 5px;
   border: 1px;
   height: 27.26px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.modal__input:last-of-type {
-  margin-bottom: 48px;
+.popup__input:focus {
+  outline: 2px solid cornflowerblue;
+}
+
+.popup__input:last-of-type {
   height: 27.34px;
 }
 
-.modal__button {
+.popup__button {
   width: 100%;
   height: 50.15px;
   border-radius: 2px;
@@ -111,51 +114,76 @@
   color: white;
   font-size: 18px;
   line-height: 21.78px;
+  margin-top: 48px;
 }
 
-.modal__container:hover,
-.modal__container_large:hover,
-.modal__input:hover,
-.modal__button:hover {
+.popup__error {
+  display: none;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14.52px;
+  color: #ff0000;
+  position: absolute;
+  display: inline-block;
+  max-width: 66%;
+}
+
+.popup__input_type_description,
+.popup__input_type_url {
+  margin-top: 29.74px;
+}
+
+.popup__button_disabled {
+  pointer-events: none;
+  opacity: 0.2;
+}
+
+.popup__input_type_error {
+  border-bottom: 2px solid red;
+}
+
+.popup__container:hover,
+.popup__container_large:hover,
+.popup__button:hover {
   cursor: pointer;
 }
 
-.modal__close:hover,
-.modal__button:hover {
+.popup__close:hover,
+.popup__button:hover {
   opacity: 0.8;
 }
 
 @media screen and (max-width: 630px) {
-  .modal__close {
+  .popup__close {
     width: 26px;
     height: 26px;
     bottom: calc(100% + 14px);
     left: calc(100% - 25px);
   }
 
-  .modal__container {
+  .popup__container {
     max-width: 282px;
     min-height: 322px;
     padding-left: 22px;
     padding-right: 16px;
   }
 
-  .modal__container_large {
+  .popup__container_large {
     max-width: 240px;
     max-height: 299px;
   }
 
-  .modal__heading {
+  .popup__heading {
     font-size: 18px;
     line-height: 21.78px;
     padding: 25px 0 0;
   }
 
-  .modal__form {
+  .popup__form {
     padding: 75px 0 25px 0;
   }
 
-  .modal__button {
+  .popup__button {
     height: 46px;
     font-size: 14px;
     line-height: 16.94px;
