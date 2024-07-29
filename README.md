@@ -48,7 +48,8 @@ The main structure of the webpage including profile section, cards section, and 
 
 ### CSS
 
-normalize.css: Ensures consistent styling across different browsers.
+#### normalize.css: Ensures consistent styling across different browsers.
+
 fonts.css: Defines custom fonts.
 page.css: General styles for the page.
 header.css: Styles for the header section.
