@@ -1,4 +1,4 @@
-.popup {
+popup {
   font-family: "Inter", Arial, sans-serif;
   position: fixed;
   top: 0;
@@ -34,6 +34,10 @@
 }
 
 .popup__container_large {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   max-width: 75vw;
   max-height: 75vh;
 }
@@ -112,10 +116,6 @@
   margin-top: 48px;
 }
 
-.popup__input_type_error {
-  border-bottom: 2px solid red;
-}
-
 .popup__error {
   display: none;
   font-size: 12px;
@@ -135,6 +135,10 @@
 .popup__button_disabled {
   pointer-events: none;
   opacity: 0.2;
+}
+
+.popup__input_type_error {
+  border-bottom: 2px solid red;
 }
 
 .popup__container:hover,
