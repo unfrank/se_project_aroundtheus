@@ -1,5 +1,15 @@
 import Card from "../components/Card.js";
+import FormValidator from "../components/FormValidator.js";
 
+// Configuration object for form validation
+const formValidationSettings = {
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+};
+
+// Define initial cards
 const initialCards = [
   {
     name: "Yosemite Valley",
@@ -28,6 +38,23 @@ const initialCards = [
 ];
 
 // Element Selectors
+const profileEditForm = document.forms["profile-form"];
+const addCardForm = document.forms["card-form"];
+
+// Create instances of FormValidator for each form
+const profileFormValidator = new FormValidator(
+  formValidationSettings,
+  profileEditForm
+);
+const cardFormValidator = new FormValidator(
+  formValidationSettings,
+  addCardForm
+);
+
+// Enable validation
+profileFormValidator.enableValidation();
+cardFormValidator.enableValidation();
+
 const profileEditButton = document.querySelector("#profile-edit-button");
 const addCardButton = document.querySelector(".profile__add-button");
 
@@ -42,9 +69,6 @@ const profileTitleInput = document.querySelector("#profile-title-input");
 const profileDescriptionInput = document.querySelector(
   "#profile-description-input"
 );
-
-const profileEditForm = document.forms["profile-form"];
-const addCardForm = document.forms["card-form"];
 
 const cardListEl = document.querySelector(".cards__list");
 
@@ -81,6 +105,7 @@ const handleEscClose = (event) => {
 const handleProfileEditButtonClick = () => {
   profileTitleInput.value = profileTitle.textContent;
   profileDescriptionInput.value = profileDescription.textContent;
+  profileFormValidator.resetValidation();
   openPopup(profileEditPopup);
 };
 
@@ -89,6 +114,7 @@ const handleProfileEditSubmit = (e) => {
   e.preventDefault();
   profileTitle.textContent = profileTitleInput.value;
   profileDescription.textContent = profileDescriptionInput.value;
+  profileFormValidator.disableButtonAfterSubmit();
   closePopup(profileEditPopup);
 };
 
@@ -100,8 +126,10 @@ const handleAddCardSubmit = (e) => {
   const cardData = { name: title, link: url };
   const card = new Card(cardData, "#card-template", openPicturePopup);
   cardListEl.prepend(card.getView());
+  cardFormValidator.disableButtonAfterSubmit();
   closePopup(addCardPopup);
   addCardForm.reset();
+  cardFormValidator.resetValidation();
 };
 
 // Function to open the picture popup
@@ -133,7 +161,9 @@ const openPicturePopup = (imageSrc, imageTitle) => {
 profileEditButton.addEventListener("click", handleProfileEditButtonClick);
 profileEditForm.addEventListener("submit", handleProfileEditSubmit);
 
-addCardButton.addEventListener("click", () => openPopup(addCardPopup));
+addCardButton.addEventListener("click", () => {
+  cardFormValidator.resetValidation();
+});
 addCardForm.addEventListener("submit", handleAddCardSubmit);
 
 document.querySelectorAll(".popup__close").forEach((button) => {
