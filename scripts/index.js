@@ -1,3 +1,5 @@
+import Card from "../components/Card.js";
+
 const initialCards = [
   {
     name: "Yosemite Valley",
@@ -33,14 +35,6 @@ const profileEditPopup = document.querySelector("#profile-edit-popup");
 const addCardPopup = document.querySelector("#add-card-popup");
 
 const picturePopup = document.querySelector("#picture-popup");
-const picturePopupContainer = picturePopup.querySelector(
-  ".popup__container_large"
-);
-const picturePopupImage = picturePopup.querySelector(".popup__image");
-
-const profileEditCloseButton = profileEditPopup.querySelector(".popup__close");
-const addCardCloseButton = addCardPopup.querySelector(".popup__close");
-const picturePopupCloseButton = picturePopup.querySelector(".popup__close");
 
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
@@ -50,26 +44,19 @@ const profileDescriptionInput = document.querySelector(
 );
 
 const profileEditForm = document.forms["profile-form"];
-const cardListEl = document.querySelector(".cards__list");
-const cardTemplate =
-  document.querySelector("#card-template").content.firstElementChild;
-
 const addCardForm = document.forms["card-form"];
-const addCardTitleInput = document.querySelector("#add-card-title");
-const addCardUrlInput = document.querySelector("#add-card-url");
 
-const closeButtons = document.querySelectorAll(".popup__close");
+const cardListEl = document.querySelector(".cards__list");
 
-// popup Functions
+// Function to open a popup
 const openPopup = (popup) => {
   popup.classList.add("popup_opened");
-  popup.addEventListener("click", handleOverlayClick);
   document.addEventListener("keydown", handleEscClose);
 };
 
+// Function to close a popup
 const closePopup = (popup) => {
   popup.classList.remove("popup_opened");
-  popup.removeEventListener("click", handleOverlayClick);
   document.removeEventListener("keydown", handleEscClose);
 };
 
@@ -90,94 +77,48 @@ const handleEscClose = (event) => {
   }
 };
 
-// Event Handlers
-const handleProfileEditSubmit = (e) => {
-  e.preventDefault();
-  profileTitle.textContent = profileTitleInput.value;
-  profileDescription.textContent = profileDescriptionInput.value;
-  closePopup(profileEditPopup);
-  profileEditForm.reset();
-};
-
-const handleAddCardSubmit = (e) => {
-  e.preventDefault();
-  const title = addCardTitleInput.value;
-  const url = addCardUrlInput.value;
-  const cardData = { name: title, link: url };
-  renderCard(cardData, "prepend");
-  closePopup(addCardPopup);
-  addCardForm.reset();
-};
-
+// Open the profile edit popup with current profile data
 const handleProfileEditButtonClick = () => {
   profileTitleInput.value = profileTitle.textContent;
   profileDescriptionInput.value = profileDescription.textContent;
   openPopup(profileEditPopup);
 };
 
-const handleAddCardButtonClick = () => openPopup(addCardPopup);
-const handleProfileEditCloseButtonClick = () => closePopup(profileEditPopup);
-const handleAddCardCloseButtonClick = () => closePopup(addCardPopup);
-const handlePicturePopupCloseButtonClick = () => closePopup(picturePopup);
-
-closeButtons.forEach((button) => {
-  const popup = button.closest(".popup");
-  button.addEventListener("click", () => closePopup(popup));
-});
-
-// Open and Close popups
-profileEditButton.addEventListener("click", handleProfileEditButtonClick);
-addCardButton.addEventListener("click", handleAddCardButtonClick);
-profileEditCloseButton.addEventListener(
-  "click",
-  handleProfileEditCloseButtonClick
-);
-addCardCloseButton.addEventListener("click", handleAddCardCloseButtonClick);
-picturePopupCloseButton.addEventListener(
-  "click",
-  handlePicturePopupCloseButtonClick
-);
-profileEditForm.addEventListener("submit", handleProfileEditSubmit);
-addCardForm.addEventListener("submit", handleAddCardSubmit);
-
-// Card Functions
-const getCardEl = (cardData) => {
-  const cardElement = cardTemplate.cloneNode(true);
-
-  const cardImageEl = cardElement.querySelector(".card__image");
-  const cardTitleEl = cardElement.querySelector(".card__title");
-  const likeButton = cardElement.querySelector(".card__like-button");
-  const trashButton = cardElement.querySelector(".card__trash-button");
-
-  cardTitleEl.textContent = cardData.name;
-  cardImageEl.src = cardData.link;
-  cardImageEl.alt = cardData.name;
-
-  cardImageEl.addEventListener("click", () =>
-    openPicturePopup(cardData.link, cardData.name)
-  );
-  likeButton.addEventListener("click", () =>
-    likeButton.classList.toggle("card__like-button_active")
-  );
-  trashButton.addEventListener("click", () => cardElement.remove());
-
-  return cardElement;
+// Handle profile form submission
+const handleProfileEditSubmit = (e) => {
+  e.preventDefault();
+  profileTitle.textContent = profileTitleInput.value;
+  profileDescription.textContent = profileDescriptionInput.value;
+  closePopup(profileEditPopup);
 };
 
-const renderCard = (item, method = "prepend") => {
-  const cardElement = getCardEl(item);
-  cardListEl[method](cardElement);
+// Handle adding a new card
+const handleAddCardSubmit = (e) => {
+  e.preventDefault();
+  const title = addCardTitleInput.value;
+  const url = addCardUrlInput.value;
+  const cardData = { name: title, link: url };
+  const card = new Card(cardData, "#card-template", openPicturePopup);
+  cardListEl.prepend(card.getView());
+  closePopup(addCardPopup);
+  addCardForm.reset();
 };
 
+// Function to open the picture popup
 const openPicturePopup = (imageSrc, imageTitle) => {
+  const picturePopupImage = picturePopup.querySelector(".popup__image");
+  const captionElement = picturePopup.querySelector(".popup__caption");
+
   picturePopupImage.src = imageSrc;
   picturePopupImage.alt = imageTitle;
-  const captionElement = picturePopup.querySelector(".popup__caption");
   captionElement.textContent = imageTitle;
 
   const img = new Image();
   img.src = imageSrc;
   img.onload = () => {
+    const picturePopupContainer = picturePopup.querySelector(
+      ".popup__container_large"
+    );
     picturePopupContainer.classList.remove("popup_landscape", "popup_portrait");
     if (img.width > img.height) {
       picturePopupContainer.classList.add("popup_landscape");
@@ -188,7 +129,25 @@ const openPicturePopup = (imageSrc, imageTitle) => {
   };
 };
 
-// Initialize Cards
+// Event Listeners
+profileEditButton.addEventListener("click", handleProfileEditButtonClick);
+profileEditForm.addEventListener("submit", handleProfileEditSubmit);
+
+addCardButton.addEventListener("click", () => openPopup(addCardPopup));
+addCardForm.addEventListener("submit", handleAddCardSubmit);
+
+document.querySelectorAll(".popup__close").forEach((button) => {
+  const popup = button.closest(".popup");
+  button.addEventListener("click", () => closePopup(popup));
+});
+
+// Initialize and render initial cards
 initialCards.forEach((cardData) => {
-  renderCard(cardData, "prepend");
+  const card = new Card(cardData, "#card-template", openPicturePopup);
+  cardListEl.prepend(card.getView());
+});
+
+// Handle overlay clicks for closing popups
+document.querySelectorAll(".popup").forEach((popup) => {
+  popup.addEventListener("click", handleOverlayClick);
 });
