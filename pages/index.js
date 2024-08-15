@@ -37,6 +37,12 @@ const initialCards = [
   },
 ];
 
+// Function to create a card
+function createCard(cardData) {
+  const card = new Card(cardData, "#card-template", openPicturePopup);
+  return card.getView();
+}
+
 // Element Selectors
 const profileEditForm = document.forms["profile-form"];
 const addCardForm = document.forms["card-form"];
@@ -111,7 +117,7 @@ const handleProfileEditSubmit = (e) => {
   e.preventDefault();
   profileTitle.textContent = profileTitleInput.value;
   profileDescription.textContent = profileDescriptionInput.value;
-  profileFormValidator.disableButtonAfterSubmit();
+  profileFormValidator.disableButton();
   closePopup(profileEditPopup);
 };
 
@@ -120,13 +126,11 @@ const handleAddCardSubmit = (e) => {
   e.preventDefault();
   const title = addCardTitleInput.value;
   const url = addCardUrlInput.value;
-  const cardData = { name: title, link: url };
-  const card = new Card(cardData, "#card-template", openPicturePopup);
-  cardListEl.prepend(card.getView());
-  cardFormValidator.disableButtonAfterSubmit();
+  const cardElement = createCard({ name: title, link: url });
+  cardListEl.prepend(cardElement);
+  cardFormValidator.disableButton();
   closePopup(addCardPopup);
   addCardForm.reset();
-  cardFormValidator.resetValidation();
 };
 
 // Function to open the picture popup
@@ -154,13 +158,17 @@ const openPicturePopup = (imageSrc, imageTitle) => {
   };
 };
 
+// Initialize and render initial cards
+initialCards.forEach((cardData) => {
+  const card = createCard(cardData);
+  cardListEl.prepend(card);
+});
+
 // Event Listeners
 profileEditButton.addEventListener("click", handleProfileEditButtonClick);
 profileEditForm.addEventListener("submit", handleProfileEditSubmit);
 
 addCardButton.addEventListener("click", () => {
-  addCardForm.reset();
-  cardFormValidator.resetValidation();
   openPopup(addCardPopup);
 });
 
@@ -169,12 +177,6 @@ addCardForm.addEventListener("submit", handleAddCardSubmit);
 document.querySelectorAll(".popup__close").forEach((button) => {
   const popup = button.closest(".popup");
   button.addEventListener("click", () => closePopup(popup));
-});
-
-// Initialize and render initial cards
-initialCards.forEach((cardData) => {
-  const card = new Card(cardData, "#card-template", openPicturePopup);
-  cardListEl.prepend(card.getView());
 });
 
 // Handle overlay clicks for closing popups
