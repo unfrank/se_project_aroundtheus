@@ -40,6 +40,20 @@ const initialCards = [
 // Element Selectors
 const profileEditForm = document.forms["profile-form"];
 const addCardForm = document.forms["card-form"];
+const profileEditButton = document.querySelector("#profile-edit-button");
+const addCardButton = document.querySelector("#profile-add-button");
+const profileEditPopup = document.querySelector("#profile-edit-popup");
+const addCardPopup = document.querySelector("#add-card-popup");
+const picturePopup = document.querySelector("#picture-popup");
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
+const profileTitleInput = document.querySelector("#profile-title-input");
+const profileDescriptionInput = document.querySelector(
+  "#profile-description-input"
+);
+const cardListEl = document.querySelector(".cards__list");
+const addCardTitleInput = document.querySelector("#add-card-title");
+const addCardUrlInput = document.querySelector("#add-card-url");
 
 // Create instances of FormValidator for each form
 const profileFormValidator = new FormValidator(
@@ -54,23 +68,6 @@ const cardFormValidator = new FormValidator(
 // Enable validation
 profileFormValidator.enableValidation();
 cardFormValidator.enableValidation();
-
-const profileEditButton = document.querySelector("#profile-edit-button");
-const addCardButton = document.querySelector(".profile__add-button");
-
-const profileEditPopup = document.querySelector("#profile-edit-popup");
-const addCardPopup = document.querySelector("#add-card-popup");
-
-const picturePopup = document.querySelector("#picture-popup");
-
-const profileTitle = document.querySelector(".profile__title");
-const profileDescription = document.querySelector(".profile__description");
-const profileTitleInput = document.querySelector("#profile-title-input");
-const profileDescriptionInput = document.querySelector(
-  "#profile-description-input"
-);
-
-const cardListEl = document.querySelector(".cards__list");
 
 // Function to open a popup
 const openPopup = (popup) => {
@@ -162,8 +159,11 @@ profileEditButton.addEventListener("click", handleProfileEditButtonClick);
 profileEditForm.addEventListener("submit", handleProfileEditSubmit);
 
 addCardButton.addEventListener("click", () => {
+  addCardForm.reset();
   cardFormValidator.resetValidation();
+  openPopup(addCardPopup);
 });
+
 addCardForm.addEventListener("submit", handleAddCardSubmit);
 
 document.querySelectorAll(".popup__close").forEach((button) => {
