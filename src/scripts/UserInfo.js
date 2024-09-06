@@ -1,20 +1,19 @@
+// UserInfo.js
 export default class UserInfo {
-  constructor({ nameSelector, jobSelector }) {
+  constructor({ nameSelector, descriptionSelector }) {
     this._nameElement = document.querySelector(nameSelector);
-    this._jobElement = document.querySelector(jobSelector);
+    this._descriptionElement = document.querySelector(descriptionSelector);
   }
 
-  // Method to get current user information
   getUserInfo() {
     return {
       name: this._nameElement.textContent,
-      job: this._jobElement.textContent,
+      description: this._descriptionElement.textContent,
     };
   }
 
-  // Method to set new user information on the page
-  setUserInfo({ name, job }) {
+  setUserInfo({ name, description }) {
     this._nameElement.textContent = name;
-    this._jobElement.textContent = job;
+    this._descriptionElement.textContent = description;
   }
 }

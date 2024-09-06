@@ -6,7 +6,7 @@ import {
 import Card from "./components/Card.js";
 import FormValidator from "./components/FormValidator.js";
 import Popup from "./scripts/Popup.js";
-import PopupWithForm from "./scripts/popupWithForm.js";
+import PopupWithForm from "./scripts/PopupWithForm.js";
 import PopupWithImage from "./scripts/PopupWithImage.js";
 import Section from "./scripts/Section.js";
 import UserInfo from "./scripts/UserInfo.js";
