@@ -1,4 +1,3 @@
-// UserInfo.js
 export default class UserInfo {
   constructor({ nameSelector, descriptionSelector }) {
     this._nameElement = document.querySelector(nameSelector);

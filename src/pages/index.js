@@ -2,16 +2,15 @@ import {
   formValidationSettings,
   initialCards,
   selectors,
-} from "./utils/constants.js";
-import Card from "./components/Card.js";
-import FormValidator from "./components/FormValidator.js";
-import Popup from "./scripts/Popup.js";
-import PopupWithForm from "./scripts/PopupWithForm.js";
-import PopupWithImage from "./scripts/PopupWithImage.js";
-import Section from "./scripts/Section.js";
-import UserInfo from "./scripts/UserInfo.js";
-
-import "./pages/index.css";
+} from "../utils/constants.js";
+import Card from "../components/Card.js";
+import FormValidator from "../components/FormValidator.js";
+import Popup from "./Popup.js";
+import PopupWithForm from "./PopupWithForm.js";
+import PopupWithImage from "./PopupWithImage.js";
+import Section from "./Section.js";
+import UserInfo from "./UserInfo.js";
+import "../pages/index.css";
 
 // Destructured selectors
 const {
@@ -159,3 +158,6 @@ document.querySelectorAll(".popup__close").forEach((button) => {
 document.querySelectorAll(".popup").forEach((popup) => {
   popup.addEventListener("click", handleOverlayClick);
 });
+
+// eliminate scripts folder and assimilate
+// clean up comments
