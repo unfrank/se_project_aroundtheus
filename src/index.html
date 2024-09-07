@@ -7,6 +7,7 @@
   </head>
   <body class="page">
     <div class="page__content">
+      <!-- Header section with logo -->
       <header class="header page__section">
         <img
           src="<%=require('./images/logo.svg')%>"
@@ -14,22 +15,26 @@
           class="header__logo"
         />
       </header>
+
+      <!-- Main content section -->
       <main class="content">
+        <!-- Profile section with profile image, name, edit button, and add button -->
         <section class="profile page__section">
           <img
             src="<%=require('./images/jacques-cousteau.jpg')%>"
             alt="Portrait of Jacques"
             class="profile__image"
           />
-
           <div class="profile__info">
             <h1 class="profile__title">Jacques Cousteau</h1>
+            <!-- Profile name -->
             <button
               class="profile__edit-button"
               id="profile-edit-button"
               type="button"
             ></button>
             <p class="profile__description">Explorer</p>
+            <!-- Profile description -->
           </div>
           <button
             class="profile__add-button"
@@ -37,21 +42,28 @@
             type="button"
           ></button>
         </section>
+
+        <!-- Section to display cards -->
         <section class="cards page__section">
           <ul class="cards__list"></ul>
+          <!-- List of cards will be injected here -->
         </section>
       </main>
+
+      <!-- Footer section -->
       <footer class="footer">
         <p class="footer__text">© 2024 Around The U.S.</p>
       </footer>
     </div>
 
-    <!-- Edit popup -->
+    <!-- Popup for editing profile -->
     <div class="popup" id="profile-edit-popup">
       <div class="popup__container">
         <button class="popup__close" type="button"></button>
+        <!-- Close popup button -->
         <h2 class="popup__heading">Edit Profile</h2>
         <form class="popup__form" id="edit-profile-form" name="profile-form">
+          <!-- Input for editing profile name -->
           <input
             class="popup__input popup__input_type_name"
             id="profile-title-input"
@@ -64,6 +76,9 @@
             autocomplete="off"
           />
           <span class="popup__error" id="profile-title-input-error"></span>
+          <!-- Error message for name input -->
+
+          <!-- Input for editing profile description -->
           <input
             class="popup__input popup__input_type_description"
             id="profile-description-input"
@@ -79,19 +94,24 @@
             class="popup__error"
             id="profile-description-input-error"
           ></span>
+          <!-- Error message for description input -->
+
           <button class="popup__button popup__button_disabled" type="submit">
             Save
+            <!-- Save button for the form -->
           </button>
         </form>
       </div>
     </div>
 
-    <!-- Add Card popup -->
+    <!-- Popup for adding a new card -->
     <div class="popup" id="add-card-popup">
       <div class="popup__container">
         <button class="popup__close" type="button"></button>
+        <!-- Close popup button -->
         <h2 class="popup__heading">New Place</h2>
         <form class="popup__form" id="add-card-form" name="card-form">
+          <!-- Input for the new card title -->
           <input
             class="popup__input popup__input_type_title"
             id="add-card-title"
@@ -104,6 +124,9 @@
             autocomplete="off"
           />
           <span class="popup__error" id="add-card-title-error"></span>
+          <!-- Error message for title input -->
+
+          <!-- Input for the new card image URL -->
           <input
             class="popup__input popup__input_type_url"
             id="add-card-url"
@@ -114,31 +137,42 @@
             autocomplete="off"
           />
           <span class="popup__error" id="add-card-url-error"></span>
+          <!-- Error message for URL input -->
+
           <button class="popup__button popup__button_disabled" type="submit">
             Save
+            <!-- Save button for the form -->
           </button>
         </form>
       </div>
     </div>
 
-    <!-- Picture popup -->
+    <!-- Popup for displaying an image -->
     <div class="popup" id="picture-popup">
       <div class="popup__container popup__container_large">
         <button class="popup__close" type="button"></button>
+        <!-- Close popup button -->
         <img class="popup__image" />
+        <!-- Full-size image displayed in the popup -->
         <div class="popup__caption"></div>
+        <!-- Caption for the image -->
       </div>
     </div>
 
+    <!-- Template for card structure -->
     <template id="card-template">
       <li class="card">
         <div class="card__image-container">
           <img class="card__image" />
+          <!-- Image for the card -->
           <button class="card__trash-button" type="button"></button>
+          <!-- Delete button for the card -->
         </div>
         <div class="card__description">
           <h3 class="card__title"></h3>
+          <!-- Card title -->
           <button class="card__like-button" type="button"></button>
+          <!-- Like button for the card -->
         </div>
       </li>
     </template>

@@ -1,3 +1,4 @@
+// Imports modules and classes
 import {
   formValidationSettings,
   initialCards,
@@ -5,159 +6,109 @@ import {
 } from "../utils/constants.js";
 import Card from "../components/Card.js";
 import FormValidator from "../components/FormValidator.js";
-import Popup from "./Popup.js";
 import PopupWithForm from "./PopupWithForm.js";
 import PopupWithImage from "./PopupWithImage.js";
 import Section from "./Section.js";
 import UserInfo from "./UserInfo.js";
 import "../pages/index.css";
 
-// Destructured selectors
+// Destructured selectors from the constants file
 const {
   profileEditForm,
   addCardForm,
   profileEditButton,
   addCardButton,
-  profileEditPopup,
-  addCardPopup,
-  picturePopup,
-  profileTitle,
-  profileDescription,
   profileTitleInput,
   profileDescriptionInput,
   cardListEl,
-  addCardTitleInput,
-  addCardUrlInput,
 } = selectors;
 
-// Function to create a card
-function createCard(cardData) {
-  const card = new Card(cardData, "#card-template", openPicturePopup);
-  return card.getView();
+// Initialize UserInfo to manage and update profile data (name and description)
+const userInfo = new UserInfo({
+  nameSelector: ".profile__title", // Selector for the profile title element
+  descriptionSelector: ".profile__description", // Selector for the profile description element
+});
+
+// Function to open the profile edit popup with current user data
+function handleProfileEdit() {
+  const userData = userInfo.getUserInfo(); // Get current profile data (name, description)
+  profileTitleInput.value = userData.name; // Pre-fill the form with the current name
+  profileDescriptionInput.value = userData.description; // Pre-fill the form with the current description
+  profileFormValidator.resetValidation(); // Reset validation state for the form
+  profileEditPopupInstance.open(); // Open the popup
 }
 
-// Create instances of FormValidator for each form
-const profileFormValidator = new FormValidator(
-  formValidationSettings,
-  profileEditForm
-);
-const cardFormValidator = new FormValidator(
-  formValidationSettings,
-  addCardForm
+// Function to open the image popup with the provided image link and name
+function handleImagePopup(link, name) {
+  picturePopupInstance.open({ name, link }); // Pass the image data to the popup instance
+}
+
+// Function to create a new card using the Card class
+function createCard(cardData) {
+  const card = new Card(cardData, "#card-template", handleImagePopup); // Initialize Card with image popup handler
+  return card.getView(); // Return the card element for rendering
+}
+
+// Initialize the Section class to render and manage the card list
+const cardSection = new Section(
+  {
+    items: initialCards, // Array of initial cards to render
+    renderer: createCard, // Function to create and render each card
+  },
+  ".cards__list" // The container for the card list
 );
 
-// Enable validation
+// Initialize the profile edit popup with form handling
+const profileEditPopupInstance = new PopupWithForm(
+  "#profile-edit-popup", // The popup selector
+  (formData) => {
+    userInfo.setUserInfo({
+      name: formData.name, // Update the user's name with the form input
+      description: formData.description, // Update the user's description with the form input
+    });
+    profileEditPopupInstance.close(); // Close the popup after submission
+  }
+);
+profileEditPopupInstance.setEventListeners(); // Set up event listeners for the popup
+
+// Initialize the add card popup with form handling
+const addCardPopupInstance = new PopupWithForm(
+  "#add-card-popup", // The popup selector
+  (formData) => {
+    const cardElement = createCard({
+      name: formData.title, // Title input from the form
+      link: formData.url, // URL input from the form
+    });
+    cardSection.addItem(cardElement); // Add the new card to the card section
+    addCardPopupInstance.close(); // Close the popup after submission
+  }
+);
+addCardPopupInstance.setEventListeners(); // Set up event listeners for the popup
+
+// Initialize the image popup for displaying larger images
+const picturePopupInstance = new PopupWithImage("#picture-popup");
+picturePopupInstance.setEventListeners(); // Set up event listeners for the popup
+
+// Initialize form validators for the profile and card forms
+const profileFormValidator = new FormValidator(
+  formValidationSettings, // Validation settings
+  profileEditForm // Form element for profile editing
+);
+const cardFormValidator = new FormValidator(
+  formValidationSettings, // Validation settings
+  addCardForm // Form element for adding a new card
+);
+
+// Enable form validation for both forms
 profileFormValidator.enableValidation();
 cardFormValidator.enableValidation();
 
-// Function to open a popup
-const openPopup = (popup) => {
-  popup.classList.add("popup_opened");
-  document.addEventListener("keydown", handleEscClose);
-};
+// Render the initial cards when the page loads
+cardSection.renderItems(); // The Section class manages card insertion into the DOM
 
-// Function to close a popup
-const closePopup = (popup) => {
-  popup.classList.remove("popup_opened");
-  document.removeEventListener("keydown", handleEscClose);
-};
-
-// Close popup on overlay click
-const handleOverlayClick = (event) => {
-  if (event.target.classList.contains("popup")) {
-    closePopup(event.target);
-  }
-};
-
-// Close popup on Esc key press
-const handleEscClose = (event) => {
-  if (event.key === "Escape") {
-    const openedPopup = document.querySelector(".popup_opened");
-    if (openedPopup) {
-      closePopup(openedPopup);
-    }
-  }
-};
-
-// Open the profile edit popup with current profile data
-const handleProfileEditButtonClick = () => {
-  profileTitleInput.value = profileTitle.textContent;
-  profileDescriptionInput.value = profileDescription.textContent;
-  profileFormValidator.resetValidation();
-  openPopup(profileEditPopup);
-};
-
-// Handle profile form submission
-const handleProfileEditSubmit = (e) => {
-  e.preventDefault();
-  profileTitle.textContent = profileTitleInput.value;
-  profileDescription.textContent = profileDescriptionInput.value;
-  profileFormValidator.disableButton();
-  closePopup(profileEditPopup);
-};
-
-// Handle adding a new card
-const handleAddCardSubmit = (e) => {
-  e.preventDefault();
-  const title = addCardTitleInput.value;
-  const url = addCardUrlInput.value;
-  const cardElement = createCard({ name: title, link: url });
-  cardListEl.prepend(cardElement);
-  cardFormValidator.disableButton();
-  closePopup(addCardPopup);
-  addCardForm.reset();
-};
-
-// Function to open the picture popup
-const openPicturePopup = (imageSrc, imageTitle) => {
-  const picturePopupImage = picturePopup.querySelector(".popup__image");
-  const captionElement = picturePopup.querySelector(".popup__caption");
-
-  picturePopupImage.src = imageSrc;
-  picturePopupImage.alt = imageTitle;
-  captionElement.textContent = imageTitle;
-
-  const img = new Image();
-  img.src = imageSrc;
-  img.onload = () => {
-    const picturePopupContainer = picturePopup.querySelector(
-      ".popup__container_large"
-    );
-    picturePopupContainer.classList.remove("popup_landscape", "popup_portrait");
-    if (img.width > img.height) {
-      picturePopupContainer.classList.add("popup_landscape");
-    } else {
-      picturePopupContainer.classList.add("popup_portrait");
-    }
-    openPopup(picturePopup);
-  };
-};
-
-// Initialize and render initial cards
-initialCards.forEach((cardData) => {
-  const card = createCard(cardData);
-  cardListEl.prepend(card);
-});
-
-// Event Listeners
-profileEditButton.addEventListener("click", handleProfileEditButtonClick);
-profileEditForm.addEventListener("submit", handleProfileEditSubmit);
-
+// Set up event listeners for the profile edit and add card buttons
+profileEditButton.addEventListener("click", handleProfileEdit); // Open the profile edit popup when the button is clicked
 addCardButton.addEventListener("click", () => {
-  openPopup(addCardPopup);
+  cardFormValidator.resetValidation(); // Reset validation state for the form
+  addCardPopupInstance.open(); // Open the add card popup when the button is clicked
 });
-
-addCardForm.addEventListener("submit", handleAddCardSubmit);
-
-document.querySelectorAll(".popup__close").forEach((button) => {
-  const popup = button.closest(".popup");
-  button.addEventListener("click", () => closePopup(popup));
-});
-
-// Handle overlay clicks for closing popups
-document.querySelectorAll(".popup").forEach((popup) => {
-  popup.addEventListener("click", handleOverlayClick);
-});
-
-// eliminate scripts folder and assimilate
-// clean up comments
