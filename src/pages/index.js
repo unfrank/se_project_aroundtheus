@@ -71,10 +71,6 @@ const profileEditPopupInstance = new PopupWithForm(
       description: formData.description,
     });
     profileEditPopupInstance.close(); // Close the popup after submission
-
-    // Clear the form inputs after submission to reset for next use
-    profileTitleInput.value = "";
-    profileDescriptionInput.value = "";
   }
 );
 profileEditPopupInstance.setEventListeners(); // Set up event listeners for the popup
@@ -87,6 +83,7 @@ const addCardPopupInstance = new PopupWithForm(
       name: formData.title, // Title input from the form
       link: formData.url, // URL input from the form
     });
+    cardFormValidator.disableButton();
     cardSection.addItem(cardElement); // Add the new card to the card section
     addCardPopupInstance.close(); // Close the popup after submission
   }
@@ -117,6 +114,5 @@ cardSection.renderItems(); // The Section class manages card insertion into the 
 // Set up event listeners for the profile edit and add card buttons
 profileEditButton.addEventListener("click", handleProfileEdit);
 addCardButton.addEventListener("click", () => {
-  cardFormValidator.resetValidation(); // Reset validation state for the form
   addCardPopupInstance.open(); // Open the add card popup when the button is clicked
 });
