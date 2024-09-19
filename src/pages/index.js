@@ -116,3 +116,5 @@ profileEditButton.addEventListener("click", handleProfileEdit);
 addCardButton.addEventListener("click", () => {
   addCardPopupInstance.open(); // Open the add card popup when the button is clicked
 });
+
+// just  some small alteration
