@@ -20,21 +20,26 @@
       <main class="content">
         <!-- Profile section with profile image, name, edit button, and add button -->
         <section class="profile page__section">
-          <img
-            src="<%=require('./images/jacques-cousteau.jpg')%>"
-            alt="Portrait of Jacques"
-            class="profile__image"
-          />
+          <div class="profile__image-container">
+            <img
+              src="<%=require('./images/jacques-cousteau.jpg')%>"
+              alt="Portrait of Jacques"
+              class="profile__image"
+            />
+            <!-- Edit icon for profile picture -->
+            <button
+              class="profile__edit-avatar-button"
+              id="edit-avatar-button"
+            ></button>
+          </div>
           <div class="profile__info">
             <h1 class="profile__title">Jacques Cousteau</h1>
-            <!-- Profile name -->
             <button
               class="profile__edit-button"
               id="profile-edit-button"
               type="button"
             ></button>
             <p class="profile__description">Explorer</p>
-            <!-- Profile description -->
           </div>
           <button
             class="profile__add-button"
@@ -159,12 +164,17 @@
       </div>
     </div>
 
-<!-- ! -->
-    <div class="popup">
-      <button class="popup__close" type="button">bleh</button>
-      <button class="popup__button popup__button_disabled" type="submit">
+    <!-- Popup for confirming card deletion -->
+    <div class="popup" id="delete-card-popup">
+      <div class="popup__container">
+        <button class="popup__close" type="button"></button>
+        <h2 class="popup__heading">Edit Profile</h2>
+        <button class="popup__button" id="confirm-delete-button" type="button">
+          Yes
+        </button>
+      </div>
     </div>
-<!-- ! -->
+
     <!-- Template for card structure -->
     <template id="card-template">
       <li class="card">

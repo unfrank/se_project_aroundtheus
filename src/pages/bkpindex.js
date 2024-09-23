@@ -29,16 +29,6 @@ const {
   profileDescriptionInput,
 } = selectors;
 
-// Cache DOM elements for buttons to avoid querying repeatedly
-const saveProfileButton = document.querySelector(
-  "#profile-edit-popup .popup__button"
-);
-const saveCardButton = document.querySelector("#add-card-popup .popup__button");
-const saveAvatarButton = document.querySelector(
-  "#avatar-edit-popup .popup__button"
-);
-const avatarEditButton = document.querySelector("#edit-avatar-button");
-
 // Initialize UserInfo to manage and update profile data (name and description)
 const userInfoInstance = new UserInfo({
   nameSelector: ".profile__title",
@@ -53,20 +43,17 @@ function handleDeleteCard(cardElement, cardId) {
   // Open the delete confirmation popup
   deletePopup.classList.add("popup_opened");
 
-  // Set up a one-time event listener to confirm card deletion
-  confirmDeleteButton.addEventListener(
-    "click",
-    () => {
-      api
-        .deleteCard(cardId)
-        .then(() => {
-          cardElement.remove();
-          deletePopup.classList.remove("popup_opened");
-        })
-        .catch((err) => console.error(`Error deleting card: ${err}`));
-    },
-    { once: true } // Ensures the listener is removed after one execution
-  );
+  // When the user confirms the deletion
+  confirmDeleteButton.addEventListener("click", () => {
+    api
+      .deleteCard(cardId)
+      .then(() => {
+        cardElement.remove();
+        deletePopup.classList.remove("popup_opened");
+        confirmDeleteButton.removeEventListener("click", deleteCard);
+      })
+      .catch((err) => console.error(`Error deleting card: ${err}`));
+  });
 
   // Set up event listener to close the popup
   deletePopup.querySelector(".popup__close").addEventListener("click", () => {
@@ -106,13 +93,7 @@ api
   .getInitialCards()
   .then((cards) => {
     cards.forEach((cardData) => {
-      const cardElement = createCard({
-        name: cardData.name,
-        link: cardData.link,
-        _id: cardData._id,
-        owner: cardData.owner,
-        isLiked: cardData.isLiked,
-      });
+      const cardElement = createCard(cardData);
       cardSection.addItem(cardElement);
     });
   })
@@ -137,7 +118,10 @@ function handleImagePopup(link, name) {
 const profileEditPopupInstance = new PopupWithForm(
   "#profile-edit-popup",
   (formData) => {
-    saveProfileButton.textContent = "Saving...";
+    const saveButton = document.querySelector(
+      "#profile-edit-popup .popup__button"
+    );
+    saveButton.textContent = "Saving...";
 
     api
       .updateUserInfo(formData) // API call to update user info
@@ -150,7 +134,7 @@ const profileEditPopupInstance = new PopupWithForm(
       })
       .catch((err) => console.error("Error updating profile:", err))
       .finally(() => {
-        saveProfileButton.textContent = "Save"; //Revert back to save
+        saveButton.textContent = "Save"; //Revert back to save
       });
   }
 );
@@ -160,7 +144,8 @@ profileEditPopupInstance.setEventListeners(); // Set up event listeners for the 
 const addCardPopupInstance = new PopupWithForm(
   "#add-card-popup",
   (formData) => {
-    saveCardButton.textContent = "Saving...";
+    const saveButton = document.querySelector("#add-card-popup .popup__button");
+    saveButton.textContent = "Saving...";
 
     api
       .addCard(formData) // API call to add a new card
@@ -171,15 +156,19 @@ const addCardPopupInstance = new PopupWithForm(
       })
       .catch((err) => console.error("Error adding card:", err))
       .finally(() => {
-        saveCardButton.textContent = "Save";
+        saveButton.textContent = "Save";
       });
   }
 );
 addCardPopupInstance.setEventListeners(); // Set up event listeners for the popup
 
 // Initialize the avatar edit popup with form handling
+const avatarEditButton = document.querySelector("#edit-avatar-button");
 const avatarEditPopup = new PopupWithForm("#avatar-edit-popup", (formData) => {
-  saveAvatarButton.textContent = "Saving...";
+  const saveButton = document.querySelector(
+    "#avatar-edit-popup .popup__button"
+  );
+  saveButton.textContent = "Saving...";
 
   api
     .updateAvatar(formData.avatar) // API call to update the avatar
@@ -190,7 +179,7 @@ const avatarEditPopup = new PopupWithForm("#avatar-edit-popup", (formData) => {
     })
     .catch((err) => console.error("Error updating avatar:", err))
     .finally(() => {
-      saveAvatarButton.textContent = "Save";
+      saveButton.textContent = "Save";
     });
 });
 

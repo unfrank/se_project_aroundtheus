@@ -11,22 +11,27 @@ class Api {
     return Promise.reject(`Error: ${res.status}`);
   }
 
+  _handleError(err) {
+    console.error(err);
+    return Promise.reject(err);
+  }
+
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
       headers: this._headers,
     })
       .then(this._checkResponse)
-      .catch((err) => {
-        console.error(`Error fetching cards: ${err}`);
-      });
+      .catch(this._handleError);
   }
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       headers: this._headers,
-    }).then(this._checkResponse);
+    })
+      .then(this._checkResponse)
+      .catch(this._handleError);
   }
 
-  updateProfile({ name, about }) {
+  updateUserInfo({ name, about }) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
       headers: this._headers,
@@ -34,7 +39,9 @@ class Api {
         name: name,
         about: about,
       }),
-    }).then(this._checkResponse);
+    })
+      .then(this._checkResponse)
+      .catch(this._handleError);
   }
 
   addCard({ name, link }) {
@@ -45,28 +52,36 @@ class Api {
         name: name,
         link: link,
       }),
-    }).then(this._checkResponse);
+    })
+      .then(this._checkResponse)
+      .catch(this._handleError);
   }
 
   deleteCard(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: "DELETE",
       headers: this._headers,
-    }).then(this._checkResponse);
+    })
+      .then(this._checkResponse)
+      .catch(this._handleError);
   }
 
   likeCard(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: "PUT",
       headers: this._headers,
-    }).then(this._checkResponse);
+    })
+      .then(this._checkResponse)
+      .catch(this._handleError);
   }
 
   dislikeCard(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: "DELETE",
       headers: this._headers,
-    }).then(this._checkResponse);
+    })
+      .then(this._checkResponse)
+      .catch(this._handleError);
   }
 
   updateAvatar(avatarUrl) {
@@ -76,26 +91,8 @@ class Api {
       body: JSON.stringify({
         avatar: avatarUrl,
       }),
-    }).then(this._checkResponse);
+    })
+      .then(this._checkResponse)
+      .catch(this._handleError);
   }
 }
-
-// const api = new Api({
-//   baseUrl: "https://around-api.en.tripleten-services.com/v1",
-//   headers: {
-//     authorization: "44d8c50a-4351-4ebe-b36f-61738a0ce3c1",
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// api.getInitialCards().then((cards) => {
-//   console.log(cards);
-
-api
-  .getInitialCards()
-  .then((result) => {
-    console.log(result);
-  })
-  .catch((err) => {
-    console.error(err);
-  });
