@@ -1,7 +1,8 @@
+// popup.js
 export default class Popup {
   constructor(popupSelector) {
-    this._popupElement = document.querySelector(popupSelector);
-    this._handleEscClose = this._handleEscClose.bind(this); // Bind the context of _handleEscClose
+    this._popupElement = document.querySelector(popupSelector); // This must be valid!
+    this._handleEscClose = this._handleEscClose.bind(this); // Bind context for esc close
   }
 
   open() {
@@ -16,17 +17,20 @@ export default class Popup {
 
   _handleEscClose(evt) {
     if (evt.key === "Escape") {
-      this.close(); // Close the popup if ESC is pressed
+      this.close();
     }
   }
 
   setEventListeners() {
     this._popupElement
       .querySelector(".popup__close")
-      .addEventListener("click", () => this.close());
-    this._popupElement.addEventListener("click", (evt) => {
+      .addEventListener("click", () => {
+        this.close();
+      });
+
+    this._popupElement.addEventListener("mousedown", (evt) => {
       if (evt.target === this._popupElement) {
-        this.close(); // Close the popup if clicked on overlay
+        this.close();
       }
     });
   }

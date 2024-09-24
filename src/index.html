@@ -168,10 +168,31 @@
     <div class="popup" id="delete-card-popup">
       <div class="popup__container">
         <button class="popup__close" type="button"></button>
-        <h2 class="popup__heading">Edit Profile</h2>
+        <h2 class="popup__heading">Are you sure?</h2>
         <button class="popup__button" id="confirm-delete-button" type="button">
           Yes
         </button>
+      </div>
+    </div>
+
+    <!-- Popup for editing avatar -->
+    <div class="popup" id="avatar-edit-popup">
+      <div class="popup__container">
+        <button class="popup__close" type="button"></button>
+        <h2 class="popup__heading">Change Profile Picture</h2>
+        <form class="popup__form" id="edit-avatar-form" name="avatar-form">
+          <input
+            class="popup__input popup__input_type_avatar"
+            id="avatar-url-input"
+            type="url"
+            required
+            name="avatar"
+            placeholder="Avatar URL"
+            autocomplete="off"
+          />
+          <span class="popup__error" id="avatar-url-input-error"></span>
+          <button class="popup__button" type="submit">Save</button>
+        </form>
       </div>
     </div>
 
@@ -179,16 +200,13 @@
     <template id="card-template">
       <li class="card">
         <div class="card__image-container">
-          <img class="card__image" />
-          <!-- Image for the card -->
+          <img class="card__image" alt="Card image" />
           <button class="card__trash-button" type="button"></button>
-          <!-- Delete button for the card -->
         </div>
         <div class="card__description">
           <h3 class="card__title"></h3>
-          <!-- Card title -->
           <button class="card__like-button" type="button"></button>
-          <!-- Like button for the card -->
+          <span class="card__like-count">0</span>
         </div>
       </li>
     </template>

@@ -1,11 +1,22 @@
 export default class Card {
-  constructor({ name, link, _id, likes }, cardSelector, handleImageClick) {
+  constructor(
+    { name, link, _id, likes, owner },
+    cardSelector,
+    handleImageClick,
+    currentUserId,
+    api,
+    handleDeleteCard // Added handleDeleteCard to constructor
+  ) {
     this._name = name;
     this._link = link;
     this._id = _id;
     this._likes = likes; // List of users who liked the card
+    this._owner = owner; // Owner ID of the card
+    this._currentUserId = currentUserId; // The current logged-in user's ID
     this._cardSelector = cardSelector;
     this._handleImageClick = handleImageClick;
+    this._api = api; // Reference to the API class instance
+    this._handleDeleteCard = handleDeleteCard; // Reference to handleDeleteCard function
   }
 
   _createCardElement() {
@@ -19,11 +30,17 @@ export default class Card {
     this._trashButton = this._cardElement.querySelector(".card__trash-button");
     this._cardImageEl = this._cardElement.querySelector(".card__image");
     this._cardTitleEl = this._cardElement.querySelector(".card__title");
-    this._likeCountEl = this._cardElement.querySelector(".card__like-count"); // Assuming there’s a span to show like count
+    this._likeCountEl = this._cardElement.querySelector(".card__like-count");
 
+    // Set the card data
     this._cardTitleEl.textContent = this._name;
     this._cardImageEl.src = this._link;
     this._cardImageEl.alt = this._name;
+
+    // Hide the trash button if the current user is not the card owner
+    if (this._owner !== this._currentUserId) {
+      this._trashButton.style.display = "none";
+    }
 
     // Set the initial like state and count
     this._setLikeState();
@@ -31,34 +48,51 @@ export default class Card {
     return this._cardElement;
   }
 
-  // Check if the card is liked and update the heart icon
+  // Check if the card is liked by the current user and update the heart icon
   _setLikeState() {
-    const userLiked = this._likes.some((user) => user._id === "your-user-id"); // Replace "your-user-id" with the actual user ID
-    if (userLiked) {
-      this._likeButton.classList.add("card__like-button_active"); // Change heart color
-      this._isLiked = true;
+    if (Array.isArray(this._likes)) {
+      if (this._likes.length === 0) {
+        this._likeCountEl.textContent = 0;
+        this._likeButton.classList.remove("card__like-button_active");
+        this._isLiked = false;
+      } else {
+        const userLiked = this._likes.some(
+          (user) => user._id === this._currentUserId
+        );
+        if (userLiked) {
+          this._likeButton.classList.add("card__like-button_active");
+          this._isLiked = true;
+        } else {
+          this._likeButton.classList.remove("card__like-button_active");
+          this._isLiked = false;
+        }
+        this._likeCountEl.textContent = this._likes.length;
+      }
     } else {
-      this._likeButton.classList.remove("card__like-button_active");
-      this._isLiked = false;
+      console.error("Likes data is not an array:", this._likes);
+      this._likes = []; // Default to an empty array if undefined
+      this._likeCountEl.textContent = 0;
     }
-    this._likeCountEl.textContent = this._likes.length;
   }
 
+  // Toggle like/unlike card
   _toggleLike() {
     if (this._isLiked) {
-      api
-        .dislikeCard(this._id) // Unlike the card
+      // If the card is liked, send a DELETE request to remove the like
+      this._api
+        .dislikeCard(this._id)
         .then((updatedCard) => {
           this._likes = updatedCard.likes; // Update the likes array
-          this._setLikeState(); // Update UI based on the new like status
+          this._setLikeState(); // Update the UI based on the new like status
         })
         .catch((err) => console.error(`Error unliking card: ${err}`));
     } else {
-      api
-        .likeCard(this._id) // Like the card
+      // If the card is not liked, send a PUT request to like the card
+      this._api
+        .likeCard(this._id)
         .then((updatedCard) => {
           this._likes = updatedCard.likes; // Update the likes array
-          this._setLikeState(); // Update UI based on the new like status
+          this._setLikeState(); // Update the UI based on the new like status
         })
         .catch((err) => console.error(`Error liking card: ${err}`));
     }
@@ -69,10 +103,13 @@ export default class Card {
       this._toggleLike(); // Toggle like/unlike on click
     });
 
-    this._trashButton.addEventListener(
-      "click",
-      () => handleDeleteCard(this._cardElement, this._id) // Open delete confirmation
-    );
+    // Show delete confirmation if the current user owns the card
+    if (this._owner === this._currentUserId) {
+      this._trashButton.addEventListener(
+        "click",
+        () => this._handleDeleteCard(this._cardElement, this._id) // Use this._handleDeleteCard
+      );
+    }
 
     this._cardImageEl.addEventListener("click", () =>
       this._handleImageClick(this._link, this._name)
