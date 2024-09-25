@@ -31,6 +31,8 @@
   border-radius: 10px;
   max-width: 430px;
   min-height: 330px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .popup__container_large {
@@ -127,6 +129,16 @@
   max-width: 66%;
 }
 
+.popup__delete-card {
+  min-height: 181px;
+}
+
+.popup__button_confirm-delete {
+  max-width: 358px;
+  max-height: 50px;
+  margin: 0 36px 36px;
+}
+
 .popup__input_type_description,
 .popup__input_type_url {
   margin-top: 29.74px;
@@ -165,6 +177,15 @@
     min-height: 322px;
     padding-left: 22px;
     padding-right: 16px;
+    box-sizing: border-box;
+  }
+
+  .popup__delete-card {
+    max-width: 282px;
+    min-height: 181px;
+    padding-left: 22px;
+    padding-right: 16px;
+    box-sizing: border-box;
   }
 
   .popup__container_large {
@@ -176,6 +197,7 @@
     font-size: 18px;
     line-height: 21.78px;
     padding: 25px 0 0;
+    text-align: left;
   }
 
   .popup__form {
@@ -186,5 +208,11 @@
     height: 46px;
     font-size: 14px;
     line-height: 16.94px;
+  }
+
+  .popup__button_confirm-delete {
+    margin: 60px auto 0;
+    display: block;
+    width: 100%;
   }
 }

@@ -51,6 +51,8 @@ function handleDeleteCard(cardElement, cardId) {
   const confirmDeleteButton = document.querySelector("#confirm-delete-button");
 
   deletePopup.classList.add("popup_opened");
+  // Log computed style to check width
+  console.log(getComputedStyle(deletePopup).width);
 
   confirmDeleteButton.addEventListener(
     "click",

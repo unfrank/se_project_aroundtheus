@@ -77,22 +77,21 @@ export default class Card {
 
   // Toggle like/unlike card
   _toggleLike() {
+    console.log("Like button clicked, current like state:", this._isLiked);
     if (this._isLiked) {
-      // If the card is liked, send a DELETE request to remove the like
       this._api
         .dislikeCard(this._id)
         .then((updatedCard) => {
-          this._likes = updatedCard.likes; // Update the likes array
-          this._setLikeState(); // Update the UI based on the new like status
+          this._likes = updatedCard.likes;
+          this._setLikeState();
         })
         .catch((err) => console.error(`Error unliking card: ${err}`));
     } else {
-      // If the card is not liked, send a PUT request to like the card
       this._api
         .likeCard(this._id)
         .then((updatedCard) => {
-          this._likes = updatedCard.likes; // Update the likes array
-          this._setLikeState(); // Update the UI based on the new like status
+          this._likes = updatedCard.likes;
+          this._setLikeState();
         })
         .catch((err) => console.error(`Error liking card: ${err}`));
     }
