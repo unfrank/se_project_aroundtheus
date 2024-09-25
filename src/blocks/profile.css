@@ -80,14 +80,24 @@
   transition: 0.66s ease;
 }
 
-/* ! */
 .profile__image-container {
   position: relative;
 }
-/* TODO: fix .profile__edit-avatar-button:hover to change opacity of .profile__image */
+
 .profile__image:hover {
   opacity: 0.6;
   transition: 0.33s ease;
+}
+
+.profile__image-container:hover .profile__image {
+  opacity: 0.6;
+  transition: 0.33s ease;
+}
+
+.profile__image-container:hover .profile__edit-avatar-button,
+.profile__edit-avatar-button:hover {
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
 .profile__edit-avatar-button {
@@ -108,7 +118,6 @@
 .profile__image-container:hover .profile__edit-avatar-button {
   opacity: 1;
 }
-/* ! */
 
 @media screen and (max-width: 480px) {
   .profile {

@@ -1,26 +1,30 @@
+// The UserInfo class is responsible for managing and updating user information on the page
 export default class UserInfo {
-  // Constructor initializes the class with the selectors for name, description, and avatar elements
+  // The constructor accepts an object with CSS selectors for the user's name, description, and avatar
   constructor({ nameSelector, descriptionSelector, avatarSelector }) {
+    // Store the DOM elements for name, description, and avatar based on the provided selectors
     this._nameElement = document.querySelector(nameSelector);
     this._descriptionElement = document.querySelector(descriptionSelector);
-    this._avatarElement = document.querySelector(avatarSelector); // Avatar selector
+    this._avatarElement = document.querySelector(avatarSelector);
   }
 
-  // Method to get the current user information (name, description, avatar) from the DOM
+  // Method to get the current user information from the page
   getUserInfo() {
+    // Returns an object with the current name, description, and avatar URL from the page
     return {
-      name: this._nameElement.textContent, // Get the name from the DOM element
-      description: this._descriptionElement.textContent, // Get the description
-      avatar: this._avatarElement.src, // Get the avatar URL
+      name: this._nameElement.textContent,
+      description: this._descriptionElement.textContent,
+      avatar: this._avatarElement.src,
     };
   }
 
-  // Method to update the user's information in the DOM (name, description, avatar)
+  // Method to update the user information on the page
   setUserInfo({ name, description, avatar }) {
+    // Update the name and description on the page
     this._nameElement.textContent = name;
     this._descriptionElement.textContent = description;
 
-    // If avatar is provided, update the avatar in the DOM
+    // Update the avatar only if the new avatar URL is provided
     if (avatar) {
       this._avatarElement.src = avatar;
     }

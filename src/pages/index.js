@@ -9,7 +9,7 @@ import Section from "../components/Section.js";
 import UserInfo from "../components/UserInfo.js";
 import "../pages/index.css";
 
-// Initialize the API instance
+// Initialize the API instance with the base URL and headers (including authorization)
 const api = new Api({
   baseUrl: "https://around-api.en.tripleten-services.com/v1",
   headers: {
@@ -18,7 +18,7 @@ const api = new Api({
   },
 });
 
-// Destructured selectors from the constants file
+// Destructured selectors from the constants file for easy access to DOM elements
 const {
   profileEditForm,
   addCardForm,
@@ -28,7 +28,7 @@ const {
   profileDescriptionInput,
 } = selectors;
 
-// Cache DOM elements for buttons to avoid querying repeatedly
+// Cache DOM elements for buttons to avoid querying the DOM repeatedly
 const saveProfileButton = document.querySelector(
   "#profile-edit-popup .popup__button"
 );
@@ -38,87 +38,83 @@ const saveAvatarButton = document.querySelector(
 );
 const avatarEditButton = document.querySelector("#edit-avatar-button");
 
-// Initialize UserInfo to manage and update profile data
+// Initialize UserInfo to manage and update profile data on the page
 const userInfoInstance = new UserInfo({
   nameSelector: ".profile__title",
   descriptionSelector: ".profile__description",
   avatarSelector: ".profile__image",
 });
 
-// Function to handle card deletion
-function handleDeleteCard(cardElement, cardId) {
+// Function to handle card deletion with confirmation popup
+const handleDeleteCard = (cardElement, cardId) => {
   const deletePopup = document.querySelector("#delete-card-popup");
   const confirmDeleteButton = document.querySelector("#confirm-delete-button");
 
+  // Confirms card deletion by calling the API and removing the card element from the DOM
+  const confirmDelete = () => {
+    api
+      .deleteCard(cardId)
+      .then(() => {
+        cardElement.remove(); // Remove card from UI upon successful deletion
+        deletePopup.classList.remove("popup_opened");
+      })
+      .catch((err) => console.error(`Error deleting card: ${err}`));
+  };
+
+  // Add click listener for confirming deletion (once to avoid duplicate listeners)
+  confirmDeleteButton.addEventListener("click", confirmDelete, { once: true });
+
+  // Open the delete confirmation popup
   deletePopup.classList.add("popup_opened");
-  // Log computed style to check width
-  console.log(getComputedStyle(deletePopup).width);
 
-  confirmDeleteButton.addEventListener(
-    "click",
-    () => {
-      api
-        .deleteCard(cardId)
-        .then(() => {
-          cardElement.remove();
-          deletePopup.classList.remove("popup_opened");
-        })
-        .catch((err) => console.error(`Error deleting card: ${err}`));
-    },
-    { once: true }
-  );
-
+  // Close popup and remove event listener if "X" button is clicked
   deletePopup.querySelector(".popup__close").addEventListener("click", () => {
     deletePopup.classList.remove("popup_opened");
+    confirmDeleteButton.removeEventListener("click", confirmDelete); // Cleanup event listener
   });
-}
+};
 
-// Function to create a new card using the Card class
-function createCard(cardData) {
+// Function to create a new card using the Card class, passing in necessary handlers
+const createCard = (cardData) => {
   const card = new Card(
     cardData,
-    "#card-template",
-    handleImagePopup,
+    "#card-template", // Card template selector
+    handleImagePopup, // Function to handle image click popup
     currentUserId,
-    api,
-    handleDeleteCard
+    api, // API instance for handling likes and deletion
+    handleDeleteCard // Function to handle card deletion
   );
-  return card.getView();
-}
+  return card.getView(); // Return the card element
+};
 
-// Initialize the Section class to render and manage the card list
+// Initialize the Section class to render and manage card list in the UI
 const cardSection = new Section(
   {
     renderer: (cardData) => {
-      const cardElement = createCard(cardData);
-      console.log(cardElement); // Log the card element to check if it's being created correctly
-      cardSection.addItem(cardElement); // Then add the card to the section
+      const cardElement = createCard(cardData); // Create a card element for each card
+      cardSection.addItem(cardElement); // Add card to the card list (prepend)
     },
   },
-  ".cards__list"
+  ".cards__list" // Container where cards will be appended
 );
 
-// Fetch and render user info and cards
+// Fetch and render user info and cards after page load
 let currentUserId;
 api
   .getUserInfo()
   .then((userInfo) => {
-    console.log("User info fetched from server:", userInfo); // This will log the user object
-
+    // Set user info on the page using the UserInfo instance
     userInfoInstance.setUserInfo({
       name: userInfo.name,
       description: userInfo.about,
-      avatar: userInfo.avatar, // Avatar is now fetched and updated
+      avatar: userInfo.avatar,
     });
-    currentUserId = userInfo._id;
+    currentUserId = userInfo._id; // Store the current user ID
 
-    console.log("Fetching cards...");
-    return api.getInitialCards();
+    return api.getInitialCards(); // Fetch initial cards from the server
   })
   .then((cards) => {
-    console.log(cards);
-    console.log(cards); // Check if cards are fetched
-
+    // Render each card on the page
     cards.forEach((cardData) => {
       const cardElement = createCard({
         name: cardData.name,
@@ -132,35 +128,33 @@ api
   })
   .catch((err) => console.error("Error fetching user info or cards:", err));
 
-// Open the profile edit popup with current user data
-function handleProfileEdit() {
-  const userData = userInfoInstance.getUserInfo();
-  profileTitleInput.value = userData.name;
-  profileDescriptionInput.value = userData.description;
-  profileFormValidator.resetValidation();
-  profileEditPopupInstance.open();
-}
+// Opens profile edit popup and pre-fills the form with current user info
+const handleProfileEdit = () => {
+  const userData = userInfoInstance.getUserInfo(); // Get current profile data
+  profileTitleInput.value = userData.name; // Pre-fill profile name input
+  profileDescriptionInput.value = userData.description; // Pre-fill profile description
+  profileFormValidator.resetValidation(); // Reset form validation state
+  profileEditPopupInstance.open(); // Open the popup
+};
 
-// Open the image popup with provided image link and name
-function handleImagePopup(link, name) {
-  picturePopupInstance.open({ name, link });
-}
+// Opens the image popup when a card image is clicked
+const handleImagePopup = (link, name) => {
+  picturePopupInstance.open({ name, link }); // Open the popup with image and caption
+};
 
-// Initialize profile edit popup with form handling
+// Initialize profile edit popup with form submission handling
 const profileEditPopupInstance = new PopupWithForm(
   "#profile-edit-popup",
   (formData) => {
-    // Change the button text to indicate saving process
-    saveProfileButton.textContent = "Saving...";
+    saveProfileButton.textContent = "Saving..."; // Show loading state
 
-    // Send PATCH request to update the user's info
+    // Send PATCH request to update the user's profile info
     api
       .updateUserInfo({
         name: formData.name,
         about: formData.description,
       })
       .then((updatedUserInfo) => {
-        // Update the user info on the page
         userInfoInstance.setUserInfo({
           name: updatedUserInfo.name,
           description: updatedUserInfo.about,
@@ -172,23 +166,21 @@ const profileEditPopupInstance = new PopupWithForm(
         console.error("Error updating profile:", err);
       })
       .finally(() => {
-        // Reset the button text back to "Save"
-        saveProfileButton.textContent = "Save";
+        saveProfileButton.textContent = "Save"; // Reset the button text
       });
   }
 );
 
-profileEditPopupInstance.setEventListeners();
+profileEditPopupInstance.setEventListeners(); // Set event listeners for profile popup
 
-// Initialize add card popup with form handling
+// Initialize the card addition popup with form submission handling
 const addCardPopupInstance = new PopupWithForm(
   "#add-card-popup",
   (formData) => {
-    console.log(formData); // Add this to inspect formData structure
+    saveCardButton.textContent = "Saving..."; // Show loading state
 
-    saveCardButton.textContent = "Saving...";
+    // Send POST request to add a new card
     api
-
       .addCard({
         name: formData.title,
         link: formData.url,
@@ -201,38 +193,33 @@ const addCardPopupInstance = new PopupWithForm(
           owner: newCard.owner,
           likes: newCard.likes,
         });
-        cardSection.addItem(cardElement);
-        addCardPopupInstance._formElement.reset();
-        addCardPopupInstance.close();
-        saveCardButton.textContent = "Save";
+        cardSection.addItem(cardElement); // Add new card to the UI
+        addCardPopupInstance._formElement.reset(); // Reset form fields
+        addCardPopupInstance.close(); // Close the popup after success
+        saveCardButton.textContent = "Save"; // Reset button text
       })
       .catch((err) => console.error("Error adding card:", err));
-    console
-      .error("Error adding card:", err) // Log the error
-
-      .finally(() => {
-        // saveCardButton.textContent = "Save";
-        console.log("Add card form submitted:", formData);
-      });
   }
 );
-addCardPopupInstance.setEventListeners();
 
-// Initialize avatar edit popup with form handling
+addCardPopupInstance.setEventListeners(); // Set event listeners for card addition popup
+
+// Initialize avatar edit popup with form submission handling
 const avatarEditPopup = new PopupWithForm("#avatar-edit-popup", (formData) => {
-  saveAvatarButton.textContent = "Saving...";
+  saveAvatarButton.textContent = "Saving..."; // Show loading state
   api
     .updateAvatar(formData.avatar)
     .then((updatedUserInfo) => {
-      document.querySelector(".profile__image").src = updatedUserInfo.avatar;
-      avatarEditPopup.close();
+      document.querySelector(".profile__image").src = updatedUserInfo.avatar; // Update avatar in the UI
+      avatarEditPopup.close(); // Close the popup
     })
     .catch((err) => console.error("Error updating avatar:", err))
     .finally(() => {
-      saveAvatarButton.textContent = "Save";
+      saveAvatarButton.textContent = "Save"; // Reset button text
     });
 });
-avatarEditPopup.setEventListeners();
+
+avatarEditPopup.setEventListeners(); // Set event listeners for avatar edit popup
 
 // Set up the event listener for the avatar edit button
 avatarEditButton.addEventListener("click", () => {
@@ -241,7 +228,7 @@ avatarEditButton.addEventListener("click", () => {
 
 // Initialize image popup for displaying larger images
 const picturePopupInstance = new PopupWithImage("#picture-popup");
-picturePopupInstance.setEventListeners();
+picturePopupInstance.setEventListeners(); // Set event listeners for image popup
 
 // Initialize form validators for profile and card forms
 const profileFormValidator = new FormValidator(

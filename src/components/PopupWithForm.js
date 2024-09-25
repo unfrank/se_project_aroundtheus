@@ -1,29 +1,54 @@
+// Import the base Popup class
 import Popup from "./Popup.js";
 
+// PopupWithForm extends Popup to handle forms inside a popup
 export default class PopupWithForm extends Popup {
+  // Constructor takes the popup selector and a function to handle form submission
   constructor(popupSelector, handleFormSubmit) {
-    super(popupSelector); // Call the constructor of the parent class (Popup)
+    // Call the parent class (Popup) constructor with the popupSelector
+    super(popupSelector);
+
+    // Store the form submission handler function
     this._handleFormSubmit = handleFormSubmit;
+
+    // Select the form element inside the popup
     this._formElement = this._popupElement.querySelector(".popup__form");
+
+    // Select all input fields inside the form and convert them to an array
     this._inputList = Array.from(
       this._formElement.querySelectorAll(".popup__input")
     );
   }
 
+  // Private method to get the values from all input fields
   _getInputValues() {
-    const inputValues = {}; // Initialize an empty object to hold form data
+    // Create an empty object to store the input values
+    const inputValues = {};
+
+    // Iterate over all input elements and store their name and value in the object
     this._inputList.forEach((input) => {
       inputValues[input.name] = input.value;
     });
-    return inputValues; // Return the object containing all input values
+
+    // Return the object containing all input values
+    return inputValues;
   }
 
+  // Method to set event listeners for the popup
   setEventListeners() {
-    super.setEventListeners(); // Call the parent class method to handle popup listeners
+    // Call the parent class's setEventListeners method to add general popup listeners
+    super.setEventListeners();
+
+    // Add a submit event listener to the form
     this._formElement.addEventListener("submit", (evt) => {
-      evt.preventDefault(); // Prevent the default form submission behavior
-      this._handleFormSubmit(this._getInputValues()); // Call the form submit handler function
-      this._formElement.reset(); // Reset the form after submission
+      // Prevent the default form submission behavior
+      evt.preventDefault();
+
+      // Call the form submission handler with the input values
+      this._handleFormSubmit(this._getInputValues());
+
+      // Reset the form after submission
+      this._formElement.reset();
     });
   }
 }
