@@ -1,4 +1,4 @@
-// Imports modules and classes for API interactions, form validation, popup handling, and card rendering
+// Imports
 import Api from "../components/Api.js";
 import { formValidationSettings, selectors } from "../utils/constants.js";
 import Card from "../components/Card.js";
@@ -10,16 +10,16 @@ import UserInfo from "../components/UserInfo.js";
 import Popup from "../components/Popup.js"; // Import Popup for the delete confirmation popup
 import "../pages/index.css"; // Import styles for the page
 
-// Initialize the API instance with the base URL and headers (including authorization)
+// Initialize the API instance
 const api = new Api({
   baseUrl: "https://around-api.en.tripleten-services.com/v1",
   headers: {
-    authorization: "765a56ab-1403-4444-8fac-5fc1871e9695", // API token for authorization
+    authorization: "765a56ab-1403-4444-8fac-5fc1871e9695",
     "Content-Type": "application/json",
   },
 });
 
-// Destructured selectors from the constants file for easy access to DOM elements
+// Destructured selectors from constants
 const {
   profileEditForm,
   addCardForm,
@@ -27,6 +27,7 @@ const {
   addCardButton,
   profileTitleInput,
   profileDescriptionInput,
+  avatarEditForm,
 } = selectors;
 
 // Cache DOM elements for buttons to avoid querying the DOM repeatedly
@@ -52,7 +53,13 @@ deletePopupInstance.setEventListeners(); // Set up event listeners for escape ke
 
 // Function to handle card deletion with confirmation popup
 const handleDeleteCard = (cardElement, cardId) => {
-  const confirmDeleteButton = document.querySelector("#confirm-delete-button");
+  let confirmDeleteButton = document.querySelector("#confirm-delete-button");
+
+  // Remove any previously added event listeners by replacing the button
+  confirmDeleteButton.replaceWith(confirmDeleteButton.cloneNode(true));
+
+  // Reassign to the newly created button
+  confirmDeleteButton = document.querySelector("#confirm-delete-button");
 
   // Confirms card deletion by calling the API and removing the card element from the DOM
   const confirmDelete = () => {
@@ -66,22 +73,29 @@ const handleDeleteCard = (cardElement, cardId) => {
   };
 
   // Add click listener for confirming deletion (once to avoid duplicate listeners)
-  confirmDeleteButton.addEventListener("click", confirmDelete, { once: true });
+  confirmDeleteButton.addEventListener("click", confirmDelete, {
+    once: true,
+  });
 
   // Open the delete confirmation popup
   deletePopupInstance.open();
 
-  // Close popup and remove event listener if "X" button is clicked or Escape key is pressed
+  // Close popup and remove event listener if clicked or Esc
   document.querySelector(".popup__close").addEventListener("click", () => {
-    deletePopupInstance.close(); // Close the popup
+    deletePopupInstance.close();
     confirmDeleteButton.removeEventListener("click", confirmDelete); // Cleanup event listener
   });
 };
 
-// Function to create a new card using the Card class, passing in necessary handlers
 const createCard = (cardData) => {
   const card = new Card(
-    cardData,
+    {
+      name: cardData.name,
+      link: cardData.link,
+      _id: cardData._id,
+      owner: cardData.owner,
+      isLiked: cardData.isLiked,
+    },
     "#card-template", // Card template selector
     handleImagePopup, // Function to handle image click popup
     currentUserId, // Current user ID for managing card ownership
@@ -125,7 +139,7 @@ api
         link: cardData.link,
         _id: cardData._id,
         owner: cardData.owner,
-        likes: cardData.likes,
+        isLiked: cardData.isLiked,
       });
       cardSection.addItem(cardElement); // Add each card to the card section
     });
@@ -150,7 +164,7 @@ const handleImagePopup = (link, name) => {
 const profileEditPopupInstance = new PopupWithForm(
   "#profile-edit-popup",
   (formData) => {
-    saveProfileButton.textContent = "Saving..."; // Show loading state
+    saveProfileButton.textContent = "Saving...";
 
     // Send PATCH request to update the user's profile info
     api
@@ -170,7 +184,7 @@ const profileEditPopupInstance = new PopupWithForm(
         console.error("Error updating profile:", err); // Handle errors during profile update
       })
       .finally(() => {
-        saveProfileButton.textContent = "Save"; // Reset the button text after save
+        saveProfileButton.textContent = "Save"; // Revert the button text
       });
   }
 );
@@ -181,7 +195,7 @@ profileEditPopupInstance.setEventListeners(); // Set event listeners for the pro
 const addCardPopupInstance = new PopupWithForm(
   "#add-card-popup",
   (formData) => {
-    saveCardButton.textContent = "Saving..."; // Show loading state
+    saveCardButton.textContent = "Saving...";
 
     // Send POST request to add a new card
     api
@@ -210,19 +224,22 @@ addCardPopupInstance.setEventListeners(); // Set event listeners for the card ad
 
 // Initialize avatar edit popup with form submission handling
 const avatarEditPopup = new PopupWithForm("#avatar-edit-popup", (formData) => {
-  saveAvatarButton.textContent = "Saving..."; // Show loading state
+  saveAvatarButton.textContent = "Saving...";
 
-  // Send PATCH request to update the user's avatar
-  api
-    .updateAvatar(formData.avatar)
-    .then((updatedUserInfo) => {
-      document.querySelector(".profile__image").src = updatedUserInfo.avatar; // Update avatar in the UI
-      avatarEditPopup.close(); // Close the popup after success
-    })
-    .catch((err) => console.error("Error updating avatar:", err)) // Handle errors during avatar update
-    .finally(() => {
-      saveAvatarButton.textContent = "Save"; // Reset button text
-    });
+  // Check if the form is valid before sending the API request
+  if (!avatarFormValidator._hasInvalidInput()) {
+    // Send PATCH request to update the user's avatar
+    api
+      .updateAvatar(formData.avatar)
+      .then((updatedUserInfo) => {
+        document.querySelector(".profile__image").src = updatedUserInfo.avatar; // Update avatar in the UI
+        avatarEditPopup.close(); // Close the popup after success
+      })
+      .catch((err) => console.error("Error updating avatar:", err)) // Handle errors during avatar update
+      .finally(() => {
+        saveAvatarButton.textContent = "Save";
+      });
+  }
 });
 
 avatarEditPopup.setEventListeners(); // Set event listeners for the avatar edit popup
@@ -236,7 +253,7 @@ avatarEditButton.addEventListener("click", () => {
 const picturePopupInstance = new PopupWithImage("#picture-popup");
 picturePopupInstance.setEventListeners(); // Set event listeners for the image popup
 
-// Initialize form validators for profile and card forms
+// Initialize form validators for profile, card, and avatar forms
 const profileFormValidator = new FormValidator(
   formValidationSettings,
   profileEditForm
@@ -245,10 +262,15 @@ const cardFormValidator = new FormValidator(
   formValidationSettings,
   addCardForm
 );
+const avatarFormValidator = new FormValidator(
+  formValidationSettings,
+  avatarEditForm
+);
 
-// Enable form validation for both forms
+// Enable form validation for all forms
 profileFormValidator.enableValidation();
 cardFormValidator.enableValidation();
+avatarFormValidator.enableValidation();
 
 // Set up event listeners for profile edit and add card buttons
 profileEditButton.addEventListener("click", handleProfileEdit); // Open profile edit popup

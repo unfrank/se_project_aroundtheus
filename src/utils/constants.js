@@ -50,4 +50,5 @@ export const selectors = {
   cardListEl: document.querySelector(".cards__list"),
   addCardTitleInput: document.querySelector("#add-card-title"),
   addCardUrlInput: document.querySelector("#add-card-url"),
+  avatarEditForm: document.querySelector("#edit-avatar-form"),
 };

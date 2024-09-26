@@ -21,38 +21,12 @@ export default class Card {
     this._handleDeleteCard = handleDeleteCard; // Function to handle card deletion
   }
 
-  // Private method to create and return the card element from the template
-  _createCardElement() {
-    const cardElement = document
-      .querySelector(this._cardSelector) // Select the card template
-      .content.querySelector(".card") // Select the card structure inside the template
-      .cloneNode(true); // Clone the structure to create a new card
-
-    // Store references to various card elements
-    this._cardElement = cardElement;
-    this._likeButton = this._cardElement.querySelector(".card__like-button");
-    this._trashButton = this._cardElement.querySelector(".card__trash-button");
-    this._cardImageEl = this._cardElement.querySelector(".card__image");
-    this._cardTitleEl = this._cardElement.querySelector(".card__title");
-    this._likeCountEl = this._cardElement.querySelector(".card__like-count");
-
-    // Set the card's title, image source, and alt text
-    this._cardTitleEl.textContent = this._name;
-    this._cardImageEl.src = this._link;
-    this._cardImageEl.alt = this._name;
-
-    // Set the initial like state (active/inactive)
-    this._setLikeState();
-
-    return this._cardElement; // Return the constructed card element
-  }
-
   // Private method to update the like button's state (active if liked)
   _setLikeState() {
     if (this._isLiked) {
-      this._likeButton.classList.add("card__like-button_active");
+      this._likeButton.classList.add("card__like-button_active"); // Adds the active class to fill the heart
     } else {
-      this._likeButton.classList.remove("card__like-button_active");
+      this._likeButton.classList.remove("card__like-button_active"); // Removes the active class to unfill the heart
     }
   }
 
@@ -63,9 +37,9 @@ export default class Card {
       this._api
         .dislikeCard(this._id)
         .then((updatedCard) => {
-          this._isLiked = false; // Update local like state
-          this._likes = updatedCard.likes || []; // Update likes array
-          this._setLikeState(); // Update the UI to reflect new like state
+          // this._isLiked = false; // Update local like state
+          this._isLiked = updatedCard.isLiked; // Update likes array
+          this._setLikeState(); // Re render like state
         })
         .catch((err) => console.error(`Error unliking card: ${err}`)); // Handle errors
     } else {
@@ -73,9 +47,9 @@ export default class Card {
       this._api
         .likeCard(this._id)
         .then((updatedCard) => {
-          this._isLiked = true; // Update local like state
-          this._likes = updatedCard.likes || []; // Update likes array
-          this._setLikeState(); // Update the UI to reflect new like state
+          this._isLiked = updatedCard.isLiked; // Update the isLiked property from the response
+          // this._likes = updatedCard.likes || []; // Update likes array
+          this._setLikeState(); // Re render like state
         })
         .catch((err) => console.error(`Error liking card: ${err}`)); // Handle errors
     }
@@ -108,5 +82,30 @@ export default class Card {
     this._createCardElement(); // Create the card element
     this._setEventListeners(); // Attach event listeners to the card
     return this._cardElement; // Return the created card element
+  }
+
+  // Private method to create and return the card element from the template
+  _createCardElement() {
+    const cardElement = document
+      .querySelector(this._cardSelector) // Select the card template
+      .content.querySelector(".card") // Select the card structure inside the template
+      .cloneNode(true); // Clone the structure to create a new card
+
+    // Store references to various card elements
+    this._cardElement = cardElement;
+    this._likeButton = this._cardElement.querySelector(".card__like-button");
+    this._trashButton = this._cardElement.querySelector(".card__trash-button");
+    this._cardImageEl = this._cardElement.querySelector(".card__image");
+    this._cardTitleEl = this._cardElement.querySelector(".card__title");
+
+    // Set the card's title, image source, and alt text
+    this._cardTitleEl.textContent = this._name;
+    this._cardImageEl.src = this._link;
+    this._cardImageEl.alt = this._name;
+
+    // Set the initial like state (active/inactive)
+    this._setLikeState();
+
+    return this._cardElement; // Return the constructed card element
   }
 }
