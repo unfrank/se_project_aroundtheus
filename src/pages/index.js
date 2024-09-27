@@ -7,7 +7,6 @@ import PopupWithForm from "../components/PopupWithForm.js";
 import PopupWithImage from "../components/PopupWithImage.js";
 import Section from "../components/Section.js";
 import UserInfo from "../components/UserInfo.js";
-import Popup from "../components/Popup.js"; // Import Popup for the delete confirmation popup
 import "../pages/index.css"; // Import styles for the page
 
 // Initialize the API instance
@@ -47,22 +46,9 @@ const userInfoInstance = new UserInfo({
   avatarSelector: ".profile__image", // Selector for profile avatar
 });
 
-// Initialize the delete confirmation popup using the Popup class
-const deletePopupInstance = new Popup("#delete-card-popup");
-deletePopupInstance.setEventListeners(); // Set up event listeners for escape key, close button, and background clicks
-
 // Function to handle card deletion with confirmation popup
 const handleDeleteCard = (cardElement, cardId) => {
-  let confirmDeleteButton = document.querySelector("#confirm-delete-button");
-
-  // Remove any previously added event listeners by replacing the button
-  confirmDeleteButton.replaceWith(confirmDeleteButton.cloneNode(true));
-
-  // Reassign to the newly created button
-  confirmDeleteButton = document.querySelector("#confirm-delete-button");
-
-  // Confirms card deletion by calling the API and removing the card element from the DOM
-  const confirmDelete = () => {
+  const deletePopupInstance = new PopupWithForm("#delete-card-popup", () => {
     api
       .deleteCard(cardId) // API call to delete the card
       .then(() => {
@@ -70,23 +56,13 @@ const handleDeleteCard = (cardElement, cardId) => {
         deletePopupInstance.close(); // Close the popup after deletion
       })
       .catch((err) => console.error(`Error deleting card: ${err}`)); // Handle any errors
-  };
-
-  // Add click listener for confirming deletion (once to avoid duplicate listeners)
-  confirmDeleteButton.addEventListener("click", confirmDelete, {
-    once: true,
   });
 
-  // Open the delete confirmation popup
-  deletePopupInstance.open();
-
-  // Close popup and remove event listener if clicked or Esc
-  document.querySelector(".popup__close").addEventListener("click", () => {
-    deletePopupInstance.close();
-    confirmDeleteButton.removeEventListener("click", confirmDelete); // Cleanup event listener
-  });
+  deletePopupInstance.setEventListeners();
+  deletePopupInstance.open(); // Open the delete confirmation popup
 };
 
+// Function to create a card
 const createCard = (cardData) => {
   const card = new Card(
     {
@@ -133,7 +109,7 @@ api
   })
   .then((cards) => {
     // Render each card on the page
-    cards.forEach((cardData) => {
+    cards.reverse().forEach((cardData) => {
       const cardElement = createCard({
         name: cardData.name,
         link: cardData.link,
@@ -212,11 +188,15 @@ const addCardPopupInstance = new PopupWithForm(
           likes: newCard.likes,
         });
         cardSection.addItem(cardElement); // Add new card to the UI
-        addCardPopupInstance._formElement.reset(); // Reset form fields after submission
         addCardPopupInstance.close(); // Close the popup after success
-        saveCardButton.textContent = "Save"; // Reset button text
+        cardFormValidator.disableButton();
       })
-      .catch((err) => console.error("Error adding card:", err)); // Handle errors during card addition
+      .catch((err) => {
+        console.error("Error adding card:", err);
+      })
+      .finally(() => {
+        saveCardButton.textContent = "Save";
+      });
   }
 );
 
@@ -226,20 +206,16 @@ addCardPopupInstance.setEventListeners(); // Set event listeners for the card ad
 const avatarEditPopup = new PopupWithForm("#avatar-edit-popup", (formData) => {
   saveAvatarButton.textContent = "Saving...";
 
-  // Check if the form is valid before sending the API request
-  if (!avatarFormValidator._hasInvalidInput()) {
-    // Send PATCH request to update the user's avatar
-    api
-      .updateAvatar(formData.avatar)
-      .then((updatedUserInfo) => {
-        document.querySelector(".profile__image").src = updatedUserInfo.avatar; // Update avatar in the UI
-        avatarEditPopup.close(); // Close the popup after success
-      })
-      .catch((err) => console.error("Error updating avatar:", err)) // Handle errors during avatar update
-      .finally(() => {
-        saveAvatarButton.textContent = "Save";
-      });
-  }
+  api
+    .updateAvatar(formData.avatar)
+    .then((updatedUserInfo) => {
+      document.querySelector(".profile__image").src = updatedUserInfo.avatar; // Update avatar in the UI
+      avatarEditPopup.close(); // Close the popup after success
+    })
+    .catch((err) => console.error("Error updating avatar:", err))
+    .finally(() => {
+      saveAvatarButton.textContent = "Save";
+    });
 });
 
 avatarEditPopup.setEventListeners(); // Set event listeners for the avatar edit popup
@@ -251,7 +227,7 @@ avatarEditButton.addEventListener("click", () => {
 
 // Initialize image popup for displaying larger images
 const picturePopupInstance = new PopupWithImage("#picture-popup");
-picturePopupInstance.setEventListeners(); // Set event listeners for the image popup
+picturePopupInstance.setEventListeners();
 
 // Initialize form validators for profile, card, and avatar forms
 const profileFormValidator = new FormValidator(
