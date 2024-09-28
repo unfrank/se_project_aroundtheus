@@ -5,6 +5,7 @@ import Card from "../components/Card.js";
 import FormValidator from "../components/FormValidator.js";
 import PopupWithForm from "../components/PopupWithForm.js";
 import PopupWithImage from "../components/PopupWithImage.js";
+import PopupWithConfirmation from "../components/PopupWithConfirmation.js"; // PopupWithConfirmation for deletion
 import Section from "../components/Section.js";
 import UserInfo from "../components/UserInfo.js";
 import "../pages/index.css"; // Import styles for the page
@@ -20,13 +21,13 @@ const api = new Api({
 
 // Destructured selectors from constants
 const {
-  profileEditForm,
   addCardForm,
-  profileEditButton,
   addCardButton,
+  avatarEditForm,
+  profileEditForm,
+  profileEditButton,
   profileTitleInput,
   profileDescriptionInput,
-  avatarEditForm,
 } = selectors;
 
 // Cache DOM elements for buttons to avoid querying the DOM repeatedly
@@ -46,9 +47,13 @@ const userInfoInstance = new UserInfo({
   avatarSelector: ".profile__image", // Selector for profile avatar
 });
 
+// Initialize the delete confirmation popup only once
+const deletePopupInstance = new PopupWithConfirmation("#delete-card-popup");
+deletePopupInstance.setEventListeners(); // Set up event listeners for escape key, close button, and background clicks
+
 // Function to handle card deletion with confirmation popup
 const handleDeleteCard = (cardElement, cardId) => {
-  const deletePopupInstance = new PopupWithForm("#delete-card-popup", () => {
+  deletePopupInstance.setConfirmHandler(() => {
     api
       .deleteCard(cardId) // API call to delete the card
       .then(() => {
@@ -57,8 +62,6 @@ const handleDeleteCard = (cardElement, cardId) => {
       })
       .catch((err) => console.error(`Error deleting card: ${err}`)); // Handle any errors
   });
-
-  deletePopupInstance.setEventListeners();
   deletePopupInstance.open(); // Open the delete confirmation popup
 };
 
@@ -85,11 +88,11 @@ const createCard = (cardData) => {
 const cardSection = new Section(
   {
     renderer: (cardData) => {
-      const cardElement = createCard(cardData); // Create a card element for each card
-      cardSection.addItem(cardElement); // Add card to the card list (prepend it)
+      const cardElement = createCard(cardData);
+      cardSection.addItem(cardElement);
     },
   },
-  ".cards__list" // Container where cards will be appended
+  ".cards__list"
 );
 
 // Fetch and render user info and cards after page load
@@ -108,18 +111,9 @@ api
     return api.getInitialCards(); // Fetch initial cards from the server
   })
   .then((cards) => {
-    // Render each card on the page
-    cards.reverse().forEach((cardData) => {
-      const cardElement = createCard({
-        name: cardData.name,
-        link: cardData.link,
-        _id: cardData._id,
-        owner: cardData.owner,
-        isLiked: cardData.isLiked,
-      });
-      cardSection.addItem(cardElement); // Add each card to the card section
-    });
+    cardSection.renderItems(cards.reverse()); // Render all cards using renderItems
   })
+
   .catch((err) => console.error("Error fetching user info or cards:", err)); // Handle errors during API requests
 
 // Opens profile edit popup and pre-fills the form with current user info
@@ -140,7 +134,7 @@ const handleImagePopup = (link, name) => {
 const profileEditPopupInstance = new PopupWithForm(
   "#profile-edit-popup",
   (formData) => {
-    saveProfileButton.textContent = "Saving...";
+    profileEditPopupInstance.renderLoading(true);
 
     // Send PATCH request to update the user's profile info
     api
@@ -160,7 +154,7 @@ const profileEditPopupInstance = new PopupWithForm(
         console.error("Error updating profile:", err); // Handle errors during profile update
       })
       .finally(() => {
-        saveProfileButton.textContent = "Save"; // Revert the button text
+        profileEditPopupInstance.renderLoading(false);
       });
   }
 );
@@ -171,13 +165,12 @@ profileEditPopupInstance.setEventListeners(); // Set event listeners for the pro
 const addCardPopupInstance = new PopupWithForm(
   "#add-card-popup",
   (formData) => {
-    saveCardButton.textContent = "Saving...";
-
+    addCardPopupInstance.renderLoading(true);
     // Send POST request to add a new card
     api
       .addCard({
-        name: formData.title, // Card title
-        link: formData.url, // Card image URL
+        name: formData.title,
+        link: formData.url,
       })
       .then((newCard) => {
         const cardElement = createCard({
@@ -195,7 +188,7 @@ const addCardPopupInstance = new PopupWithForm(
         console.error("Error adding card:", err);
       })
       .finally(() => {
-        saveCardButton.textContent = "Save";
+        addCardPopupInstance.renderLoading(false);
       });
   }
 );
@@ -204,7 +197,7 @@ addCardPopupInstance.setEventListeners(); // Set event listeners for the card ad
 
 // Initialize avatar edit popup with form submission handling
 const avatarEditPopup = new PopupWithForm("#avatar-edit-popup", (formData) => {
-  saveAvatarButton.textContent = "Saving...";
+  avatarEditPopup.renderLoading(true);
 
   api
     .updateAvatar(formData.avatar)
@@ -214,7 +207,7 @@ const avatarEditPopup = new PopupWithForm("#avatar-edit-popup", (formData) => {
     })
     .catch((err) => console.error("Error updating avatar:", err))
     .finally(() => {
-      saveAvatarButton.textContent = "Save";
+      avatarEditPopup.renderLoading(false);
     });
 });
 

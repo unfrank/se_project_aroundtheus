@@ -24,9 +24,7 @@ export default class UserInfo {
     this._nameElement.textContent = name;
     this._descriptionElement.textContent = description;
 
-    // Update the avatar only if the new avatar URL is provided
-    if (avatar) {
-      this._avatarElement.src = avatar;
-    }
+    // Update the avatar
+    this._avatarElement.src = avatar;
   }
 }

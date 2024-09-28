@@ -22,7 +22,7 @@ export default class Card {
   }
 
   // Private method to update the like button's state (active if liked)
-  _setLikeState() {
+  setLikeState() {
     if (this._isLiked) {
       this._likeButton.classList.add("card__like-button_active"); // Adds the active class to fill the heart
     } else {
@@ -31,7 +31,7 @@ export default class Card {
   }
 
   // Private method to toggle like/unlike behavior
-  _toggleLike() {
+  toggleLike() {
     if (this._isLiked) {
       // If card is liked, send request to unlike the card
       this._api
@@ -39,7 +39,7 @@ export default class Card {
         .then((updatedCard) => {
           // this._isLiked = false; // Update local like state
           this._isLiked = updatedCard.isLiked; // Update likes array
-          this._setLikeState(); // Re render like state
+          this.setLikeState(); // Re render like state
         })
         .catch((err) => console.error(`Error unliking card: ${err}`)); // Handle errors
     } else {
@@ -49,17 +49,17 @@ export default class Card {
         .then((updatedCard) => {
           this._isLiked = updatedCard.isLiked; // Update the isLiked property from the response
           // this._likes = updatedCard.likes || []; // Update likes array
-          this._setLikeState(); // Re render like state
+          this.setLikeState(); // Re render like state
         })
         .catch((err) => console.error(`Error liking card: ${err}`)); // Handle errors
     }
   }
 
   // Private method to set up event listeners for card actions
-  _setEventListeners() {
+  setEventListeners() {
     // Listen for like button clicks to toggle like/unlike
     this._likeButton.addEventListener("click", () => {
-      this._toggleLike();
+      this.toggleLike();
     });
 
     // If the card belongs to the current user, set up the delete button
@@ -79,13 +79,13 @@ export default class Card {
 
   // Public method to create the card view and set up event listeners
   getView() {
-    this._createCardElement(); // Create the card element
-    this._setEventListeners(); // Attach event listeners to the card
+    this.createCardElement(); // Create the card element
+    this.setEventListeners(); // Attach event listeners to the card
     return this._cardElement; // Return the created card element
   }
 
   // Private method to create and return the card element from the template
-  _createCardElement() {
+  createCardElement() {
     const cardElement = document
       .querySelector(this._cardSelector) // Select the card template
       .content.querySelector(".card") // Select the card structure inside the template
@@ -104,7 +104,7 @@ export default class Card {
     this._cardImageEl.alt = this._name;
 
     // Set the initial like state (active/inactive)
-    this._setLikeState();
+    this.setLikeState();
 
     return this._cardElement; // Return the constructed card element
   }

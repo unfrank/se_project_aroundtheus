@@ -38,6 +38,7 @@ export const initialCards = [
 export const selectors = {
   profileEditForm: document.forms["profile-form"],
   addCardForm: document.forms["card-form"],
+  avatarEditForm: document.querySelector("#edit-avatar-form"),
   profileEditButton: document.querySelector("#profile-edit-button"),
   addCardButton: document.querySelector("#profile-add-button"),
   profileEditPopup: document.querySelector("#profile-edit-popup"),
@@ -50,5 +51,4 @@ export const selectors = {
   cardListEl: document.querySelector(".cards__list"),
   addCardTitleInput: document.querySelector("#add-card-title"),
   addCardUrlInput: document.querySelector("#add-card-url"),
-  avatarEditForm: document.querySelector("#edit-avatar-form"),
 };
