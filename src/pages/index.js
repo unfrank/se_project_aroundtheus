@@ -1,6 +1,6 @@
 // Imports
 import Api from "../components/Api.js";
-import { formValidationSettings, selectors } from "../utils/constants.js";
+import { formValidationSettings, selectors } from "../utils/utils.js";
 import Card from "../components/Card.js";
 import FormValidator from "../components/FormValidator.js";
 import PopupWithForm from "../components/PopupWithForm.js";
@@ -30,14 +30,7 @@ const {
   profileDescriptionInput,
 } = selectors;
 
-// Cache DOM elements for buttons to avoid querying the DOM repeatedly
-const saveProfileButton = document.querySelector(
-  "#profile-edit-popup .popup__button"
-);
-const saveCardButton = document.querySelector("#add-card-popup .popup__button");
-const saveAvatarButton = document.querySelector(
-  "#avatar-edit-popup .popup__button"
-);
+// Cache DOM element for the avatar edit button to avoid querying the DOM repeatedly
 const avatarEditButton = document.querySelector("#edit-avatar-button");
 
 // Initialize UserInfo to manage and update profile data on the page
@@ -81,7 +74,7 @@ const createCard = (cardData) => {
     api, // API instance for handling likes and deletion
     handleDeleteCard // Function to handle card deletion
   );
-  return card.getView(); // Return the card element to render
+  return card.getView();
 };
 
 // Initialize the Section class to render and manage the card list in the UI
