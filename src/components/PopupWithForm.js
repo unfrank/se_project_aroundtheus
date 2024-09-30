@@ -57,15 +57,10 @@ export default class PopupWithForm extends Popup {
     }
   }
 
-  // Public method to reset the form (this can now be called explicitly)
+  // Method to reset the form
   resetForm() {
     if (this.formElement) {
       this.formElement.reset();
     }
-  }
-
-  // Close popup and reset the form if applicable
-  close() {
-    super.close(); // Call the base class close method
   }
 }

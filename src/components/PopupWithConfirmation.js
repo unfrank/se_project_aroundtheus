@@ -30,10 +30,5 @@ export default class PopupWithConfirmation extends Popup {
   // Override the setEventListeners to set default popup behaviors
   setEventListeners() {
     super.setEventListeners(); // Inherit the default listeners
-
-    // Close the popup when clicking the close button
-    this._popupElement
-      .querySelector(".popup__close")
-      .addEventListener("click", () => this.close());
   }
 }

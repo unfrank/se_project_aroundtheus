@@ -19,7 +19,7 @@ const api = new Api({
   },
 });
 
-// Destructured selectors from constants
+// Destructured selectors from utils
 const {
   addCardForm,
   addCardButton,
@@ -35,27 +35,27 @@ const avatarEditButton = document.querySelector("#edit-avatar-button");
 
 // Initialize UserInfo to manage and update profile data on the page
 const userInfoInstance = new UserInfo({
-  nameSelector: ".profile__title", // Selector for profile name
-  descriptionSelector: ".profile__description", // Selector for profile description
-  avatarSelector: ".profile__image", // Selector for profile avatar
+  nameSelector: ".profile__title",
+  descriptionSelector: ".profile__description",
+  avatarSelector: ".profile__image",
 });
 
 // Initialize the delete confirmation popup only once
 const deletePopupInstance = new PopupWithConfirmation("#delete-card-popup");
-deletePopupInstance.setEventListeners(); // Set up event listeners for escape key, close button, and background clicks
+deletePopupInstance.setEventListeners();
 
 // Function to handle card deletion with confirmation popup
 const handleDeleteCard = (cardElement, cardId) => {
   deletePopupInstance.setConfirmHandler(() => {
     api
-      .deleteCard(cardId) // API call to delete the card
+      .deleteCard(cardId)
       .then(() => {
-        cardElement.remove(); // Remove card from UI upon successful deletion
-        deletePopupInstance.close(); // Close the popup after deletion
+        cardElement.remove();
+        deletePopupInstance.close();
       })
-      .catch((err) => console.error(`Error deleting card: ${err}`)); // Handle any errors
+      .catch((err) => console.error(`Error deleting card: ${err}`));
   });
-  deletePopupInstance.open(); // Open the delete confirmation popup
+  deletePopupInstance.open();
 };
 
 // Function to create a card
@@ -68,11 +68,11 @@ const createCard = (cardData) => {
       owner: cardData.owner,
       isLiked: cardData.isLiked,
     },
-    "#card-template", // Card template selector
-    handleImagePopup, // Function to handle image click popup
-    currentUserId, // Current user ID for managing card ownership
-    api, // API instance for handling likes and deletion
-    handleDeleteCard // Function to handle card deletion
+    "#card-template",
+    handleImagePopup,
+    currentUserId,
+    api,
+    handleDeleteCard
   );
   return card.getView();
 };
@@ -93,21 +93,20 @@ let currentUserId; // Variable to store the current user's ID
 api
   .getUserInfo()
   .then((userInfo) => {
-    // Set user info on the page using the UserInfo instance
     userInfoInstance.setUserInfo({
-      name: userInfo.name, // Set profile name
-      description: userInfo.about, // Set profile description
-      avatar: userInfo.avatar, // Set profile avatar
+      name: userInfo.name,
+      description: userInfo.about,
+      avatar: userInfo.avatar,
     });
-    currentUserId = userInfo._id; // Store the current user ID
+    currentUserId = userInfo._id;
 
-    return api.getInitialCards(); // Fetch initial cards from the server
+    return api.getInitialCards();
   })
   .then((cards) => {
-    cardSection.renderItems(cards.reverse()); // Render all cards using renderItems
+    cardSection.renderItems(cards.reverse());
   })
 
-  .catch((err) => console.error("Error fetching user info or cards:", err)); // Handle errors during API requests
+  .catch((err) => console.error("Error fetching user info or cards:", err));
 
 // Opens profile edit popup and pre-fills the form with current user info
 const handleProfileEdit = () => {
@@ -120,7 +119,7 @@ const handleProfileEdit = () => {
 
 // Opens the image popup when a card image is clicked
 const handleImagePopup = (link, name) => {
-  picturePopupInstance.open({ name, link }); // Open the popup with the image and its caption
+  picturePopupInstance.open({ name, link });
 };
 
 // Initialize profile edit popup with form submission handling
@@ -141,11 +140,11 @@ const profileEditPopupInstance = new PopupWithForm(
           description: updatedUserInfo.about,
           avatar: updatedUserInfo.avatar,
         });
-        profileEditPopupInstance.close(); // Close the popup after success
+        profileEditPopupInstance.close();
         profileEditPopupInstance.resetForm();
       })
       .catch((err) => {
-        console.error("Error updating profile:", err); // Handle errors during profile update
+        console.error("Error updating profile:", err);
       })
       .finally(() => {
         profileEditPopupInstance.renderLoading(false);
@@ -153,7 +152,7 @@ const profileEditPopupInstance = new PopupWithForm(
   }
 );
 
-profileEditPopupInstance.setEventListeners(); // Set event listeners for the profile edit popup
+profileEditPopupInstance.setEventListeners();
 
 // Initialize the card addition popup with form submission handling
 const addCardPopupInstance = new PopupWithForm(
@@ -174,8 +173,8 @@ const addCardPopupInstance = new PopupWithForm(
           owner: newCard.owner,
           likes: newCard.likes,
         });
-        cardSection.addItem(cardElement); // Add new card to the UI
-        addCardPopupInstance.close(); // Close the popup after success
+        cardSection.addItem(cardElement);
+        addCardPopupInstance.close();
         addCardPopupInstance.resetForm();
         cardFormValidator.disableButton();
       })
@@ -211,11 +210,12 @@ const avatarEditPopup = new PopupWithForm("#avatar-edit-popup", (formData) => {
     });
 });
 
-avatarEditPopup.setEventListeners(); // Set event listeners for the avatar edit popup
+avatarEditPopup.setEventListeners();
 
 // Set up the event listener for the avatar edit button
 avatarEditButton.addEventListener("click", () => {
-  avatarEditPopup.open(); // Open the avatar edit popup when the button is clicked
+  avatarFormValidator.resetValidation();
+  avatarEditPopup.open();
 });
 
 // Initialize image popup for displaying larger images
@@ -242,7 +242,7 @@ cardFormValidator.enableValidation();
 avatarFormValidator.enableValidation();
 
 // Set up event listeners for profile edit and add card buttons
-profileEditButton.addEventListener("click", handleProfileEdit); // Open profile edit popup
+profileEditButton.addEventListener("click", handleProfileEdit);
 addCardButton.addEventListener("click", () => {
-  addCardPopupInstance.open(); // Open card addition popup
+  addCardPopupInstance.open();
 });
