@@ -5,10 +5,10 @@ import Card from "../components/Card.js";
 import FormValidator from "../components/FormValidator.js";
 import PopupWithForm from "../components/PopupWithForm.js";
 import PopupWithImage from "../components/PopupWithImage.js";
-import PopupWithConfirmation from "../components/PopupWithConfirmation.js"; // PopupWithConfirmation for deletion
+import PopupWithConfirmation from "../components/PopupWithConfirmation.js";
 import Section from "../components/Section.js";
 import UserInfo from "../components/UserInfo.js";
-import "../pages/index.css"; // Import styles for the page
+import "../pages/index.css";
 
 // Initialize the API instance
 const api = new Api({
@@ -142,6 +142,7 @@ const profileEditPopupInstance = new PopupWithForm(
           avatar: updatedUserInfo.avatar,
         });
         profileEditPopupInstance.close(); // Close the popup after success
+        profileEditPopupInstance.resetForm();
       })
       .catch((err) => {
         console.error("Error updating profile:", err); // Handle errors during profile update
@@ -175,6 +176,7 @@ const addCardPopupInstance = new PopupWithForm(
         });
         cardSection.addItem(cardElement); // Add new card to the UI
         addCardPopupInstance.close(); // Close the popup after success
+        addCardPopupInstance.resetForm();
         cardFormValidator.disableButton();
       })
       .catch((err) => {
@@ -195,8 +197,13 @@ const avatarEditPopup = new PopupWithForm("#avatar-edit-popup", (formData) => {
   api
     .updateAvatar(formData.avatar)
     .then((updatedUserInfo) => {
-      document.querySelector(".profile__image").src = updatedUserInfo.avatar; // Update avatar in the UI
-      avatarEditPopup.close(); // Close the popup after success
+      userInfoInstance.setUserInfo({
+        name: updatedUserInfo.name,
+        description: updatedUserInfo.about,
+        avatar: updatedUserInfo.avatar,
+      });
+      avatarEditPopup.close();
+      avatarEditForm.reset();
     })
     .catch((err) => console.error("Error updating avatar:", err))
     .finally(() => {

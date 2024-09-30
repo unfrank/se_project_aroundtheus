@@ -31,13 +31,6 @@ export default class PopupWithConfirmation extends Popup {
   setEventListeners() {
     super.setEventListeners(); // Inherit the default listeners
 
-    // Close the popup when clicking outside the popup content (on the overlay)
-    this._popupElement.addEventListener("mousedown", (evt) => {
-      if (evt.target.classList.contains("popup_opened")) {
-        this.close();
-      }
-    });
-
     // Close the popup when clicking the close button
     this._popupElement
       .querySelector(".popup__close")

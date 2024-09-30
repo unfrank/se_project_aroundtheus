@@ -53,16 +53,19 @@ export default class PopupWithForm extends Popup {
       this.formElement.addEventListener("submit", (evt) => {
         evt.preventDefault();
         this.handleFormSubmit(this.__getInputValues());
-        this.formElement.reset(); // Reset only if the form exists
       });
+    }
+  }
+
+  // Public method to reset the form (this can now be called explicitly)
+  resetForm() {
+    if (this.formElement) {
+      this.formElement.reset();
     }
   }
 
   // Close popup and reset the form if applicable
   close() {
-    if (this.formElement) {
-      this.formElement.reset(); // Reset form fields if applicable
-    }
     super.close(); // Call the base class close method
   }
 }
