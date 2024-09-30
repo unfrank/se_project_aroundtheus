@@ -1,29 +1,66 @@
+// Import the base Popup class
 import Popup from "./Popup.js";
 
+// PopupWithForm extends Popup to handle forms inside a popup
 export default class PopupWithForm extends Popup {
+  // Constructor takes the popup selector and a function to handle form submission
   constructor(popupSelector, handleFormSubmit) {
-    super(popupSelector); // Call the constructor of the parent class (Popup)
-    this._handleFormSubmit = handleFormSubmit;
-    this._formElement = this._popupElement.querySelector(".popup__form");
-    this._inputList = Array.from(
-      this._formElement.querySelectorAll(".popup__input")
-    );
+    super(popupSelector);
+    this.handleFormSubmit = handleFormSubmit;
+
+    // Check if there's a form element, as some popups might not have one
+    this.formElement = this._popupElement.querySelector(".popup__form") || null;
+
+    // Find the submit button and store its initial text
+    if (this.formElement) {
+      this._submitBtn = this.formElement.querySelector(".popup__button");
+      this._submitBtnText = this._submitBtn.textContent; // Store initial button text
+    }
+
+    // If a form exists, get input fields
+    if (this.formElement) {
+      this.inputList = Array.from(
+        this.formElement.querySelectorAll(".popup__input")
+      );
+    }
   }
 
-  _getInputValues() {
-    const inputValues = {}; // Initialize an empty object to hold form data
-    this._inputList.forEach((input) => {
-      inputValues[input.name] = input.value;
-    });
-    return inputValues; // Return the object containing all input values
+  // Method to get input values from the form
+  __getInputValues() {
+    const inputValues = {};
+    if (this.formElement) {
+      this.inputList.forEach((input) => {
+        inputValues[input.name] = input.value;
+      });
+    }
+    return inputValues;
   }
 
+  // Method to handle the loading state of the submit button
+  renderLoading(isLoading, loadingText = "Saving...") {
+    if (isLoading) {
+      this._submitBtn.textContent = loadingText;
+    } else {
+      this._submitBtn.textContent = this._submitBtnText; // Revert to initial text
+    }
+  }
+
+  // Add event listeners to the form
   setEventListeners() {
-    super.setEventListeners(); // Call the parent class method to handle popup listeners
-    this._formElement.addEventListener("submit", (evt) => {
-      evt.preventDefault(); // Prevent the default form submission behavior
-      this._handleFormSubmit(this._getInputValues()); // Call the form submit handler function
-      this._formElement.reset(); // Reset the form after submission
-    });
+    super.setEventListeners();
+
+    if (this.formElement) {
+      this.formElement.addEventListener("submit", (evt) => {
+        evt.preventDefault();
+        this.handleFormSubmit(this.__getInputValues());
+      });
+    }
+  }
+
+  // Method to reset the form
+  resetForm() {
+    if (this.formElement) {
+      this.formElement.reset();
+    }
   }
 }
